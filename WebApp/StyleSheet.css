@@ -1,0 +1,363 @@
+/* BASIC TYPOGRAPHY                       */
+/* from https://github.com/oxalorg/sakura */
+html {
+    font-size: 62.5%;
+    font-family: serif;
+}
+
+body {
+    font-size: 1.8rem;
+    line-height: 1.618;
+    max-width: 38em;
+    margin: auto;
+    color: #4a4a4a;
+    background-color: #f9f9f9;
+    padding: 13px;
+}
+
+@media (max-width: 684px) {
+    body {
+        font-size: 1.53rem;
+    }
+}
+
+@media (max-width: 382px) {
+    body {
+        font-size: 1.35rem;
+    }
+}
+
+h1, h2, h3, h4, h5, h6 {
+    line-height: 1.1;
+    font-family: Verdana, Geneva, sans-serif;
+    font-weight: 700;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    -ms-word-break: break-all;
+    word-break: break-word;
+    -ms-hyphens: auto;
+    -moz-hyphens: auto;
+    -webkit-hyphens: auto;
+    hyphens: auto;
+}
+
+h1 {
+    font-size: 2.35em;
+}
+
+h2 {
+    font-size: 2em;
+}
+
+h3 {
+    font-size: 1.75em;
+}
+
+h4 {
+    font-size: 1.5em;
+}
+
+h5 {
+    font-size: 1.25em;
+}
+
+h6 {
+    font-size: 1em;
+}
+
+
+
+/* RESET LAYOUT AND ADD COLORS */
+body {
+    margin: 0;
+    padding: 0;
+    max-width: inherit;
+    background: #fff;
+    color: #4a4a4a;
+    background-color: #002b36;
+}
+
+header, footer {
+    font-size: large;
+    text-align: center;
+    padding: 0.3em 0;
+    background-color: #4a4a4a;
+    color: #f9f9f9;
+}
+
+topNav {
+    /*background-color: #073642;*/
+    border-bottom: 4px solid rgba(255, 255, 255, 0.3);
+}
+
+main {
+    /*   background: #f9f9f9; */
+    text-align: center;
+    align-items: center;
+}
+
+aside {
+    /*   background: #eee; */
+    border-right: 4px solid #073642;
+}
+
+/* GRID-BASED LAYOUT */
+body {
+    display: grid;
+    min-height: 100vh;
+    grid-template-columns: 200px 1fr 150px;
+    grid-template-rows: min-content 1fr min-content;
+}
+
+header {
+    grid-row: 1;
+    grid-column: 1 / 4;
+}
+
+topNav {
+    grid-row: 1;
+    grid-column: 1 / 4;
+}
+
+main {
+    grid-row: 2;
+    grid-column: 1 / 4;
+    padding: 0 20px;
+    display: flex;
+    justify-content: center;
+    transition-duration: 0.5s;
+}
+
+aside {
+    grid-row: 2;
+    grid-column: 1 / 2;
+    padding: 0 10px;
+}
+
+bottomNav {
+    grid-row: 3;
+    grid-column: 1 / 4;
+    border-top: 4px solid rgba(255, 255, 255, 0.3);
+}
+
+html * {
+    /*color: #839496;*/
+    color: #f9f9f9;
+    text-shadow: 1px 2px rgba(0, 0, 0, 0.4);
+    font-family: Verdana, Geneva, sans-serif;
+}
+
+.navContainer {
+    width: 25%;
+    float: left;
+    display: inline-block;
+}
+
+topNav {
+    height: 50px;
+    display: block;
+    transition-duration: 0.5s;
+}
+
+.bottomNav {
+    width: 100%;
+    transition-duration: 0.5s;
+}
+
+.navButton {
+    height: 50px;
+    font-size: 24px;
+    /*background-color: #002b36;*/
+    text-align: center;
+    align-items: center;
+    display: block;
+    margin: 0 2px 0 2px;
+    vertical-align: middle;
+    line-height: 50px;
+}
+
+.bottomNavButton {
+    z-index: -1;
+    height: 30px;
+    line-height: 30px;
+    font-size: large;
+}
+
+.navButton:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.navButton:active {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.selectedButton {
+    color: #F24738;
+}
+
+.hiddenContent {
+    transform-origin: top left;
+    transform: translateY(100%);
+    display: none;
+}
+
+.content {
+    opacity: 1;
+}
+
+.smallerNav {
+    width: 22%;
+}
+
+body {
+    background-image: url(http://wallpaperswide.com/download/blurred_purple-wallpaper-1920x1080.jpg);
+}
+
+.textConatiner {
+    min-width: 600px;
+    max-width: 600px;
+    color: #f9f9f9;
+    /*background: rgba(255, 255, 255, 0.2);*/
+    border-radius: 14px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 6px 10px 0 rgba(0,0,0,0.14), 0 1px 18px 0 rgba(0,0,0,0.12), 0 3px 5px -1px rgba(0,0,0,0.3);
+}
+
+.textHeader {
+    width: inherit;
+    color: #310341;
+    text-shadow: none;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 14px 14px 0px 0px;
+    border: 2px solid rgba(255, 255, 255, 0);
+    margin: -2px;
+    border-bottom: 0px;
+    /*box-shadow: 0 1px 1px 0 rgba(0,0,0,0.14), 0 1px 18px 0 rgba(0,0,0,0.12), 0 3px 5px -1px rgba(0,0,0,0.3);*/
+}
+
+.twitterBlend {
+    opacity: 0.6;
+}
+
+
+/*Switch*/
+.form-switch {
+    display: inline-block;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    float: right;
+}
+
+    .form-switch i {
+        position: relative;
+        display: inline-block;
+        margin-right: .5rem;
+        width: 46px;
+        height: 26px;
+        background-color: #e6e6e6;
+        border-radius: 23px;
+        vertical-align: text-bottom;
+        transition: all 0.3s linear;
+    }
+
+        .form-switch i::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            width: 42px;
+            height: 22px;
+            background-color: #fff;
+            border-radius: 11px;
+            transform: translate3d(2px, 2px, 0) scale3d(1, 1, 1);
+            transition: all 0.25s linear;
+        }
+
+        .form-switch i::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            width: 22px;
+            height: 22px;
+            background-color: #fff;
+            border-radius: 11px;
+            box-shadow: 0 2px 2px rgba(0, 0, 0, 0.24);
+            transform: translate3d(2px, 2px, 0);
+            transition: all 0.2s ease-in-out;
+        }
+
+    .form-switch:active i::after {
+        width: 28px;
+        transform: translate3d(2px, 2px, 0);
+    }
+
+    .form-switch:active input:checked + i::after {
+        transform: translate3d(16px, 2px, 0);
+    }
+
+    .form-switch input {
+        display: none;
+    }
+
+        .form-switch input:checked + i {
+            background-color: #4BD763;
+        }
+
+            .form-switch input:checked + i::before {
+                transform: translate3d(18px, 2px, 0) scale3d(0, 0, 0);
+            }
+
+            .form-switch input:checked + i::after {
+                transform: translate3d(22px, 2px, 0);
+            }
+
+button, input {
+    text-shadow: none;
+    color: #464646;
+    box-shadow: 1px 1px 1px 0 rgba(0,0,0,0.14), 0 0 0 0 rgba(0,0,0,0.12), 0 0 0 0 rgba(0,0,0,0.3);
+}
+
+.flex-container {
+    display: flex;
+    flex-wrap: wrap
+}
+
+    .flex-container.hiddenContent {
+        display: none;
+    }
+
+    .flex-container > div {
+        min-height: 200px;
+    }
+
+.categoryContainer {
+    min-width: 300px;
+    max-width: 500px;
+    margin: 10px;
+}
+
+.entryContainer {
+    min-width: 280px;
+    max-width: 480px;
+}
+.prepareContainer {
+    min-width: 300px;
+    max-width: 500px;
+    margin: 10px;
+}
+
+.entryInput {
+    background-color: rgba(255, 255, 255,0.2);
+    border: 0px;
+    border-bottom: 1px solid rgba(0,0,0,0.3);
+    box-shadow: 1px 1px 1px 0 rgba(0,0,0,0.14), 0 0 0 0 rgba(0,0,0,0.12), 0 0 0 0 rgba(0,0,0,0.3);
+    margin-top: 7px;
+}
+
+.entries {
+    padding-bottom: 7px;
+}
+
+    .entries > div {
+        display: flex;
+        padding-left: 10px;
+    }

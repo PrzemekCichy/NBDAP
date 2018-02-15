@@ -1,0 +1,252 @@
+﻿<script defer src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script>
+<head>
+    <meta charset="UTF-8">
+    <title>Twitter Analysis Platform</title>
+    <link rel="stylesheet" href="StyleSheet.css">
+</head>
+<body>
+    <topNav>
+        <div class="navContainer" style="display:none; width: 12%">
+            <div id="Home_Button" class="navButton"><i class="fas fa-home"></i> Home</div>
+        </div>
+        <div class="navContainer">
+            <h6 id="Manage_Button" class="navButton"><i class="fas fa-folder-open"></i> Manage</h6>
+        </div>
+        <div class="navContainer">
+            <h6 id="Prepare_Button" class="navButton"><i class="fas fa-search"></i> Prepare</h6>
+        </div>
+        <div class="navContainer">
+            <h6 id="Model_Button" class="navButton">
+                <i class="fas fa-graduation-cap"></i> Model
+            </h6>
+        </div>
+        <div class="navContainer">
+            <h6 id="Insights_Button" class="navButton">
+                <i class="fas fa-tachometer-alt"></i> Insights
+            </h6>
+        </div>
+    </topNav>
+    <main>
+        <div id="Home" class="content">
+            <i class="fab fa-twitter twitterBlend" style="font-size: 224px; fill: red"></i>
+            <h1>Twitter Analysis Platform</h1>
+        </div>
+
+        <div id="Manage" class="hiddenContent">
+            <p>Search directory for twitter files:</p>
+            <input style="color: #464646; min-width:300px" id="manageInput" type="text" />
+            <button style="color: #464646">Find</button>
+            <br />
+            <br />
+            <p>Or select files directly:</p>
+            <form action="#">
+                <div class="file-field input-field">
+                    <div>
+                        <input type="file" multiple>
+                    </div>
+                </div>
+            </form>
+
+            <!--<div style="color: #f53b3b">No files found.</div>-->
+        </div>
+
+        <div id="Prepare" class="flex-container hiddenContent">
+            <div class="textConatiner prepareContainer">
+                <div class="textHeader">Text</div>
+                <input class="entryInput" type="text" /><button class="entryButton"> Add</button>
+                <div class="errorMessage"></div>
+                <div class="entries"></div>
+            </div>
+            <div class="textConatiner prepareContainer">
+                <div class="textHeader">Hashtags</div>
+                <input class="entryInput" type="text" /><button class="entryButton"> Add</button>
+                <div class="errorMessage"></div>
+                <div class="entries"></div>
+            </div>
+            <div class="textConatiner prepareContainer">
+                <div class="textHeader">Reply To</div>
+                <input class="entryInput" type="text" /><button class="entryButton"> Add</button>
+                <div class="errorMessage"></div>
+                <div class="entries"></div>
+            </div>
+            <div class="textConatiner prepareContainer">
+                <div class="textHeader">User</div>
+                <input class="entryInput" type="text" /><button class="entryButton"> Add</button>
+                <div class="errorMessage"></div>
+                <div class="entries"></div>
+            </div>
+            <div class="textConatiner prepareContainer" style="max-height:350px">            
+                <p>Import configuration</p>
+                <div class="file-field input-field"><input type="file"></div>
+                <button id="importCategory" style="color: #464646">Import</button>
+                <br />
+                <p>Export Configuration</p>
+                <button id="exportConfig" style="color: #464646">Export Config</button>
+                <br />
+                <div id="categoryErrorMessage"></div>
+
+            </div>
+        </div>
+
+        <div id="Model" class="flex-container hiddenContent">
+            <div id="defaultCategoryContainer" class="categoryContainer hiddenContent">
+                <div class="textConatiner entryContainer">
+                    <div class="textHeader"></div>
+                    <input class="entryInput" type="text" /> <button class="entryButton">Add</button>
+                    <div class="errorMessage"></div>
+                    <div class="entries"></div>
+                </div>
+                <br />
+                <div class="textConatiner entryContainer">
+                    <div class="textHeader"></div>
+                    <input class="entryInput" type="text" /><button class="entryButton"> Add</button>
+                    <div class="errorMessage"></div>
+                    <div class="entries"></div>
+                </div>
+                <p>Remove Category <i class="far fa-times-circle"></i></p>
+            </div>
+
+            <div class="textConatiner categoryContainer" style="max-height:350px">
+                <br />
+                <div>Enter category name</div>
+                <input id="inputCategoryText" style="color: #464646; width:90%" type="text" />
+                <button id="addNewCategory" style="color: #464646">Add Category</button>
+                <p></p>
+                <div>Import configuration</div>
+                <div class="file-field input-field"><input type="file"></div>
+                <button id="importCategory" style="color: #464646">Import</button>
+                <br />
+                <p>Export Configuration</p>
+                <button id="exportConfig" style="color: #464646">Export Config</button>
+                <br />
+                <div id="categoryErrorMessage"></div>
+
+            </div>
+        </div>
+
+
+
+
+        <div id="Insights" class="hiddenContent">
+            Insights
+        </div>
+
+
+
+        <div id="Help" class="hiddenContent">
+
+            <div class="textConatiner">
+                <div class="textHeader">Get started with Twitter Analysis Platform</div>
+                This app aims to help with the analysis of twitter data.
+                There are 3 sections responsible for helping with each separate task.
+            </div>
+            <br>
+            <div class="textConatiner">
+                <div class="textHeader">Manage</div>
+                This sections allows to search for Twitter files with .json extension.
+            </div>
+            <br>
+            <div class="textConatiner">
+                <div class="textHeader">Prepare</div>
+                This sections allows to search files for specific text, hashtags, replies or usernames.
+                The files will be then saved with _filtered postfix.
+            </div>
+            <br>
+            <div class="textConatiner">
+                <div class="textHeader">Model</div>
+                This sections allows to add categories, and positive and negative keywords associated with them.
+            </div>
+            <br>
+            <div class="textConatiner">
+                <div class="textHeader">Insights</div>
+                This sections allows to display reports generated by the model section.
+            </div>
+        </div>
+
+        <div id="About" class="hiddenContent">
+            <div class="textConatiner">
+                <div class="textHeader">About</div>
+                <p>Twitter Analysis Platform by Przemyslaw Cichy.</p>
+                <p>Copyright 2018 Przemyslaw Cichy. </p>
+            </div>
+            <br />
+            <div class="textConatiner">
+                <div class="textHeader">Made with:</div>
+                <p>C++ AMP</p>
+                <p>.NET Core</p>
+                <p>Typescript</p>
+            </div>
+        </div>
+
+
+        <div id="Settings" class="hiddenContent">
+            <div style="max-width:600px">
+                <div>
+                    Enable GPU Acceleration
+                    <label class="form-switch">
+                        <input type="checkbox" checked>
+                        <i></i>
+                    </label>
+                </div>
+                <br />
+                <div>
+                    Enable Detailed Logs
+                    <label class="form-switch">
+                        <input type="checkbox">
+                        <i></i>
+                    </label>
+                </div>
+                <br />
+                <div>
+                    Enable Notifications
+                    <label class="form-switch">
+                        <input type="checkbox" checked>
+                        <i></i>
+                    </label>
+                </div>
+                <br />
+                <div>
+                    Minify Tweets
+                    <label class="form-switch">
+                        <input type="checkbox" checked>
+                        <i></i>
+                    </label>
+                </div>
+                <br />
+                <div>Change Default Output Location</div>
+                <input style="color: #464646; min-width:300px" id="outputLocationInput" type="text" />
+                <button style="color: #464646">Find</button>
+                <br />
+            </div>
+        </div>
+        <div id="Logs" class="hiddenContent">
+            Logs
+        </div>
+
+    </main>
+    <!--   <aside>
+        <h4>This is an aside section.</h4>
+        <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>
+      </aside> -->
+    <bottomNav>
+        <div class="navContainer">
+            <span class="navButton bottomNavButton" id="Help_Button"><i class="fas fa-question-circle"></i> Help</span>
+        </div>
+        <div class="navContainer">
+            <span class="navButton bottomNavButton" id="About_Button">
+                <i class="fas fa-info-circle"></i> About
+            </span>
+        </div>
+        <div class="navContainer">
+            <span class="navButton bottomNavButton" id="Settings_Button">
+                <i class="fas fas fa-cogs"></i> Settings
+            </span>
+        </div>
+        <div class="navContainer">
+            <span class="navButton bottomNavButton" id="Logs_Button">
+                <i class="fas fa-exclamation-triangle"></i> Logs
+            </span>
+        </div>
+    </bottomNav>
+</body>
+<script src="main.js"></script>
