@@ -9,28 +9,25 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="file.ts" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="index.html" />
-    <Content Include="main.ts" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.3" />
     <PackageReference Include="Microsoft.TypeScript.Compiler" Version="2.7.1" />
     <PackageReference Include="Microsoft.TypeScript.MSBuild" Version="2.7.1" />
   </ItemGroup>
 
   <ItemGroup>
-    <TypeScriptCompile Include="main.ts">
+    <TypeScriptCompile Include="wwwroot\main.ts">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </TypeScriptCompile>
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\" />
+    <TypeScriptCompile Remove="wwwroot\blurred_purple-wallpaper-1920x1080.jpg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\index.html" />
+    <None Include="wwwroot\main.ts" />
+    <None Include="wwwroot\StyleSheet.css" />
   </ItemGroup>
 
 </Project>

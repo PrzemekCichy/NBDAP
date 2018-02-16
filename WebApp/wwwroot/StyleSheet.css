@@ -125,7 +125,7 @@ main {
     padding: 0 20px;
     display: flex;
     justify-content: center;
-    transition-duration: 0.5s;
+    transition-duration: 0.3s;
 }
 
 aside {
@@ -210,7 +210,7 @@ topNav {
 }
 
 body {
-    background-image: url(http://wallpaperswide.com/download/blurred_purple-wallpaper-1920x1080.jpg);
+    background-image: url(img/blurred_purple-wallpaper-1920x1080.jpg);
 }
 
 .textConatiner {
@@ -339,6 +339,7 @@ button, input {
     min-width: 280px;
     max-width: 480px;
 }
+
 .prepareContainer {
     min-width: 300px;
     max-width: 500px;

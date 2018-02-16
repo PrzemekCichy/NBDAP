@@ -73,28 +73,53 @@ var App;
         });
         setUpListeners($bottomNav, function () { });
     })(Navigator || (Navigator = {}));
+    var Manage;
+    (function (Manage) {
+        var input = document.getElementById("manageInput");
+        document.getElementById("manageButton").addEventListener("click", function () {
+            console.log(input.value);
+            API.GetFiles(input.value);
+        });
+    })(Manage || (Manage = {}));
     var Prepare;
     (function (Prepare) {
-        var toAdd;
+        var names = ["Text", "Hashtags", "Reply", "User"];
+        var Tags = {
+            "Text": {},
+            "Hashtags": {},
+            "Reply": {},
+            "User": {}
+        };
         var $divArray = document.getElementsByClassName("textConatiner prepareContainer");
-        for (var i = 0; i < $divArray.length; i++) {
-            createDom($divArray[i]);
+        console.log($divArray);
+        //-1 is for the import config container
+        for (var i = 0; i < $divArray.length - 1; i++) {
+            createDom($divArray[i], names[i]);
         }
-        function createDom($container) {
-            var _this = this;
+        function createDom($container, tag) {
+            console.log("button", $container.getElementsByClassName("entryButton"));
             $container.getElementsByClassName("entryButton")[0].addEventListener("click", function () {
                 var input = $container.getElementsByClassName("entryInput")[0];
                 //if (this.Negative[input.value]) {
                 //    Log.logToDiv($container.getElementsByClassName("errorMessage")[0], "Text already exist.", "error");
                 //    return;
-                //}
-                $container.getElementsByClassName("errorMessage")[0].innerHTML = "";
-                var $element = document.createElement("div");
-                $element.innerHTML = input.value;
-                console.log("input.value", input.value);
-                $container.getElementsByClassName("entries")[0].appendChild($element);
-                _this.Add(input.value, "Negative");
-                input.value = "";
+                //}            
+                if (typeof (Tags[tag][input.value]) != "undefined") {
+                    Log.logToDiv($container.getElementsByClassName("errorMessage")[0], "Tag already exists.", "warning");
+                }
+                else if (input.value == "") {
+                    Log.logToDiv($container.getElementsByClassName("errorMessage")[0], "Tag cannot be empty.", "error");
+                }
+                else {
+                    $container.getElementsByClassName("errorMessage")[0].innerHTML = "";
+                    var $element = document.createElement("div");
+                    $element.innerHTML = input.value;
+                    console.log("input.value", input.value);
+                    $container.getElementsByClassName("entries")[0].appendChild($element);
+                    Tags[tag][input.value] = true;
+                    input.value = "";
+                    console.log(Tags);
+                }
             });
         }
     })(Prepare || (Prepare = {}));
@@ -226,5 +251,26 @@ var App;
         };
         return Log;
     }());
+    var API;
+    (function (API) {
+        var location = window.location.href;
+        function GetFiles(path) {
+            console.log(GetUrl("FilesController/getFiles"));
+            $.ajax({
+                url: GetUrl("FilesController/getFiles"),
+                type: "GET",
+                dataType: "text",
+                data: path,
+                processData: false,
+                contentType: "text/xml; charset=\"utf-8\"",
+                success: function (data) { console.log(data); },
+                error: function () { console.log("rip"); }
+            });
+        }
+        API.GetFiles = GetFiles;
+        function GetUrl(url) {
+            return window.location.href + url;
+        }
+    })(API = App.API || (App.API = {}));
 })(App || (App = {}));
 //# sourceMappingURL=main.js.map

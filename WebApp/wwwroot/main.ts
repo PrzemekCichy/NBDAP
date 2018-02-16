@@ -1,4 +1,6 @@
-﻿module App {
+﻿declare var $;
+
+module App {
 
     module Navigator {
         var $topNav: HTMLElement = <HTMLElement>document.getElementsByTagName("topNav")[0];
@@ -10,6 +12,7 @@
         var setUpListeners = (element: Element, callback: Function) => {
             //selectedButton
             element.children.length;
+
             for (var i = 0; i < element.children.length; i++) {
                 element.children[i].addEventListener("click", (element: any) => {
                     var $target: HTMLElement = element.target;
@@ -80,7 +83,11 @@
     }
 
     module Manage {
-
+        var input = <HTMLInputElement>document.getElementById("manageInput");
+        document.getElementById("manageButton").addEventListener("click", () => {
+            console.log(input.value);
+            API.GetFiles(input.value);
+        });
     }
 
     module Insights {
@@ -88,26 +95,48 @@
     }
 
     module Prepare {
-        var toAdd
+        var names = ["Text", "Hashtags", "Reply", "User"]
+        var Tags =
+            {
+                "Text": {},
+                "Hashtags": {},
+                "Reply": {},
+                "User": {}
+            };
+
         var $divArray = document.getElementsByClassName("textConatiner prepareContainer");
-        for (var i = 0; i < $divArray.length; i++) {
-            createDom(<HTMLElement>$divArray[i]);
+
+        console.log($divArray);
+
+        //-1 is for the import config container
+        for (var i = 0; i < $divArray.length - 1; i++) {
+            createDom(<HTMLElement>$divArray[i], names[i]);
         }
 
-        function createDom($container: HTMLElement) {
+        function createDom($container: HTMLElement, tag: string) {
+
+            console.log("button", $container.getElementsByClassName("entryButton"));
+
             $container.getElementsByClassName("entryButton")[0].addEventListener("click", () => {
                 var input = <HTMLInputElement>$container.getElementsByClassName("entryInput")[0];
                 //if (this.Negative[input.value]) {
                 //    Log.logToDiv($container.getElementsByClassName("errorMessage")[0], "Text already exist.", "error");
                 //    return;
-                //}
-                $container.getElementsByClassName("errorMessage")[0].innerHTML = "";
-                var $element = document.createElement("div");
-                $element.innerHTML = input.value;
-                console.log("input.value", input.value);
-                $container.getElementsByClassName("entries")[0].appendChild($element);
-                this.Add(input.value, "Negative");
-                input.value = "";
+                //}            
+                if (typeof (Tags[tag][input.value]) != "undefined") {
+                    Log.logToDiv($container.getElementsByClassName("errorMessage")[0], "Tag already exists.", "warning");
+                } else if (input.value == "") {
+                    Log.logToDiv($container.getElementsByClassName("errorMessage")[0], "Tag cannot be empty.", "error");
+                } else {
+                    $container.getElementsByClassName("errorMessage")[0].innerHTML = "";
+                    var $element = document.createElement("div");
+                    $element.innerHTML = input.value;
+                    console.log("input.value", input.value);
+                    $container.getElementsByClassName("entries")[0].appendChild($element);
+                    Tags[tag][input.value] = true;
+                    input.value = "";
+                    console.log(Tags);
+                }
             });
         }
     }
@@ -189,8 +218,8 @@
             private removeDom(name: string) {
                 document.getElementById(name + "_category").remove();
             }
-
         };
+
         document.getElementById("addNewCategory").addEventListener("click", () => {
             var input = <HTMLInputElement>document.getElementById("inputCategoryText");
             if (typeof (Categories[input.value]) != "undefined") {
@@ -216,8 +245,6 @@
         export function Import(category: string) {
             Categories = JSON.parse(category);
         }
-
-
 
     }
 
@@ -246,5 +273,28 @@
                 console.log(message);
             }
         }
+    }
+
+    export module API {
+        var location = window.location.href;
+
+        export function GetFiles(path: string) {
+            console.log(GetUrl("FilesController/getFiles"));
+            $.ajax({
+                url: GetUrl("FilesController/getFiles"),
+                type: "GET",
+                dataType: "text",
+                data: path,
+                processData: false,
+                contentType: "text/xml; charset=\"utf-8\"",
+                success: (data) => { console.log(data) },
+                error: () => { console.log("rip") }
+            });
+        }
+
+        function GetUrl(url: string) {
+            return window.location.href + url;
+        }
+
     }
 }
