@@ -80,6 +80,8 @@ var App;
             console.log(input.value);
             API.GetFiles(input.value);
         });
+        function addEntry($element, text) {
+        }
     })(Manage || (Manage = {}));
     var Prepare;
     (function (Prepare) {
@@ -90,7 +92,7 @@ var App;
             "Reply": {},
             "User": {}
         };
-        var $divArray = document.getElementsByClassName("textConatiner prepareContainer");
+        var $divArray = document.getElementById("Prepare").getElementsByClassName("textConatiner prepareContainer");
         console.log($divArray);
         //-1 is for the import config container
         for (var i = 0; i < $divArray.length - 1; i++) {
@@ -99,6 +101,7 @@ var App;
         function createDom($container, tag) {
             console.log("button", $container.getElementsByClassName("entryButton"));
             $container.getElementsByClassName("entryButton")[0].addEventListener("click", function () {
+                debugger;
                 var input = $container.getElementsByClassName("entryInput")[0];
                 //if (this.Negative[input.value]) {
                 //    Log.logToDiv($container.getElementsByClassName("errorMessage")[0], "Text already exist.", "error");
@@ -265,6 +268,16 @@ var App;
                 contentType: "text/xml; charset=\"utf-8\"",
                 success: function (data) { console.log(data); },
                 error: function () { console.log("rip"); }
+            }).done(function (data) {
+                data = JSON.parse(data);
+                var $standard = document.getElementById("standardFiles");
+                var $compressed = document.getElementById("compressedFiles");
+                data.Standard.forEach(function (value) {
+                    Helper.appendElement(value, $standard);
+                });
+                data.Compressed.forEach(function (value) {
+                    Helper.appendElement(value, $compressed);
+                });
             });
         }
         API.GetFiles = GetFiles;
@@ -272,5 +285,14 @@ var App;
             return window.location.href + url;
         }
     })(API = App.API || (App.API = {}));
+    var Helper;
+    (function (Helper) {
+        function appendElement(value, $parent) {
+            var $element = document.createElement("div");
+            $element.innerHTML = value;
+            $parent.appendChild($element);
+        }
+        Helper.appendElement = appendElement;
+    })(Helper || (Helper = {}));
 })(App || (App = {}));
 //# sourceMappingURL=main.js.map

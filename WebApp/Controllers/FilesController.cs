@@ -2,32 +2,31 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
 namespace WebApp.Controllers
 {
-    public class FilesController: Controller
+    public class FilesController : Controller
     {
-        [HttpPost("FilesController/getFiles/")]
-        public JsonResult GetFiles(string directoryPath) {
-            //Run and return list of liles
-            return new JsonResult(new List<object> {
-               new  { name = "Test.json", path = "C:/Desktop" },
-               new  { name = "Test2.json", path = "C:/Desktop/New" },
-               new  { name = directoryPath, path = directoryPath }
-            });
-        }
-
 
         [HttpGet("FilesController/getFiles")]
         public JsonResult SendDirectoryPath(string directoryPath)
         {
             var path = this.Request.Query.ElementAt(0).Key;
-            return new JsonResult(new List<object> {
-               new  { name = "Test.json", path = "C:/Desktop" },
-               new  { name = "Test2.json", path = "C:/Desktop/New" },
-               new  { name = path, path = path }
-            });
+            var a = Start();
+            Dictionary<string, List<string>> students = new Dictionary<string, List<string>>()
+            {
+                { "Standard" , new List<string>(){ @"E:\Project\2015\New\01.json", @"E:\Project\2015\New\02.json" } },
+                { "Compressed" , new List<string>(){@"E:\Project\2015\01.bz2"} }
+            };
+
+            JsonResult result = new JsonResult(students);
+
+            return result;
         }
+
+        [DllImport("TwitterPlatform.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern object Start();
     }
 }

@@ -33,21 +33,49 @@
             <h1>Twitter Analysis Platform</h1>
         </div>
 
-        <div id="Manage" class="hiddenContent">
-            <p>Search directory for twitter files:</p>
-            <input style="color: #464646; min-width:300px" id="manageInput" type="text" />
-            <button id="manageButton" style="color: #464646">Find</button>
-            <br />
-            <br />
-            <p>Or select files directly:</p>
-            <form action="#">
-                <div class="file-field input-field">
-                    <div>
-                        <input type="file" multiple>
+        <div id="Manage" class="flex-container hiddenContent">
+            <div class="textConatiner prepareContainer">
+                <div class="textHeader">Search directory for twitter files</div>
+                <p>Enter Directory Name</p>
+                <input class="entryInput" id="manageInput" type="text" />
+                <button id="manageButton" style="color: #464646">Find</button>
+                <br />
+                <br />
+                <p>Or select files directly:</p>
+                <form action="#">
+                    <div class="file-field input-field">
+                        <div>
+                            <input type="file" multiple>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="flex-container">
+
+                <div class="textConatiner prepareContainer">
+                    <div class="textHeader">Files</div>
+                    <div id="standardFiles" class="entries"></div>
+                </div>
+
+                <div class="textConatiner prepareContainer">
+                    <div class="textHeader">Compressed Files</div>
+                    <div id="compressedFiles" class="entries"></div>
+                </div>
+
+                <div class="flex-container content" style="min-height: 100%; display: flex; align-items: center; justify-content: center;">
+                    <div style="min-height: 100%;">
+                        <button id="addFiles" style="color: #464646; height: 50px; width: 100%">Add Files</button>
+                        <p></p>
+                        <button id="decompressFiles" style="color: #464646; height: 50px; width: 100%">Decompress & Add</button>
                     </div>
                 </div>
-            </form>
 
+                <div class="textConatiner prepareContainer">
+                    <div class="textHeader">Selected Files</div>
+                    <div class="entries"></div>
+                </div>
+            </div>
             <!--<div style="color: #f53b3b">No files found.</div>-->
         </div>
 
@@ -76,7 +104,7 @@
                 <div class="errorMessage"></div>
                 <div class="entries"></div>
             </div>
-            <div class="textConatiner prepareContainer" style="max-height:350px">            
+            <div class="textConatiner prepareContainer" style="max-height:350px">
                 <p>Import configuration</p>
                 <div class="file-field input-field"><input type="file"></div>
                 <button id="importCategory" style="color: #464646">Import</button>

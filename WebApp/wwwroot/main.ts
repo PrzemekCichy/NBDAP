@@ -88,6 +88,10 @@ module App {
             console.log(input.value);
             API.GetFiles(input.value);
         });
+
+        function addEntry($element, text) {
+
+        }
     }
 
     module Insights {
@@ -104,7 +108,7 @@ module App {
                 "User": {}
             };
 
-        var $divArray = document.getElementsByClassName("textConatiner prepareContainer");
+        var $divArray = document.getElementById("Prepare").getElementsByClassName("textConatiner prepareContainer");
 
         console.log($divArray);
 
@@ -118,6 +122,7 @@ module App {
             console.log("button", $container.getElementsByClassName("entryButton"));
 
             $container.getElementsByClassName("entryButton")[0].addEventListener("click", () => {
+                debugger;
                 var input = <HTMLInputElement>$container.getElementsByClassName("entryInput")[0];
                 //if (this.Negative[input.value]) {
                 //    Log.logToDiv($container.getElementsByClassName("errorMessage")[0], "Text already exist.", "error");
@@ -289,6 +294,16 @@ module App {
                 contentType: "text/xml; charset=\"utf-8\"",
                 success: (data) => { console.log(data) },
                 error: () => { console.log("rip") }
+            }).done(function (data) {
+                data = JSON.parse(data);
+                var $standard = document.getElementById("standardFiles");
+                var $compressed = document.getElementById("compressedFiles");
+                data.Standard.forEach((value) => {
+                    Helper.appendElement(value, $standard);
+                });
+                data.Compressed.forEach((value) => {
+                    Helper.appendElement(value, $compressed);
+                });
             });
         }
 
@@ -296,5 +311,13 @@ module App {
             return window.location.href + url;
         }
 
+    }
+
+    module Helper {
+        export function appendElement(value: string, $parent) {
+            var $element = document.createElement("div");
+            $element.innerHTML = value;
+            $parent.appendChild($element);
+        }
     }
 }
