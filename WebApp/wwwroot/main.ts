@@ -85,7 +85,7 @@ module App {
     module Manage {
         var input = <HTMLInputElement>document.getElementById("manageInput");
         document.getElementById("manageButton").addEventListener("click", () => {
-            console.log(input.value);
+            //console.log(input.value);
             API.GetFiles(input.value);
         });
 
@@ -278,6 +278,17 @@ module App {
                 console.log(message);
             }
         }
+
+        public static clearDiv(id: string | Element) {
+            var $element: HTMLElement;
+            if (typeof (id) == "string") {
+                $element = document.getElementById(id);
+            } else {
+                $element = <HTMLElement>id;
+            }
+            $element.innerHTML = "";
+        }
+
     }
 
     export module API {
@@ -285,6 +296,7 @@ module App {
 
         export function GetFiles(path: string) {
             console.log(GetUrl("FilesController/getFiles"));
+            Log.logToDiv("manageErrorMessage", "Retrieving data", "info");
             $.ajax({
                 url: GetUrl("FilesController/getFiles"),
                 type: "GET",
@@ -292,18 +304,27 @@ module App {
                 data: path,
                 processData: false,
                 contentType: "text/xml; charset=\"utf-8\"",
-                success: (data) => { console.log(data) },
-                error: () => { console.log("rip") }
+                success: () => {  },
+                error: () => { Log.logToDiv("manageErrorMessage", "Error occured while trying to retrieve directories from the selected location.", "error") }
             }).done(function (data) {
+                console.time("Parse");
                 data = JSON.parse(data);
+                console.timeEnd("Parse");
+
                 var $standard = document.getElementById("standardFiles");
                 var $compressed = document.getElementById("compressedFiles");
+
+                console.time("Standard");
+                var c = document.createDocumentFragment();
                 data.Standard.forEach((value) => {
-                    Helper.appendElement(value, $standard);
+                    var e = document.createElement("div");
+                    e.innerHTML = value;
+                    c.appendChild(e);
                 });
-                data.Compressed.forEach((value) => {
-                    Helper.appendElement(value, $compressed);
-                });
+                
+                $standard.appendChild(c);
+                console.timeEnd("Standard");
+                Log.clearDiv("manageErrorMessage")
             });
         }
 

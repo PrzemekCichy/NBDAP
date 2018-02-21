@@ -40,6 +40,7 @@
                 <input class="entryInput" id="manageInput" type="text" />
                 <button id="manageButton" style="color: #464646">Find</button>
                 <br />
+                <div id="manageErrorMessage"></div>
                 <br />
                 <p>Or select files directly:</p>
                 <form action="#">
@@ -53,14 +54,9 @@
 
             <div class="flex-container">
 
-                <div class="textConatiner prepareContainer">
+                <div class="textConatiner prepareContainer" style="max-width: 800px;">
                     <div class="textHeader">Files</div>
                     <div id="standardFiles" class="entries"></div>
-                </div>
-
-                <div class="textConatiner prepareContainer">
-                    <div class="textHeader">Compressed Files</div>
-                    <div id="compressedFiles" class="entries"></div>
                 </div>
 
                 <div class="flex-container content" style="min-height: 100%; display: flex; align-items: center; justify-content: center;">
@@ -210,6 +206,14 @@
 
         <div id="Settings" class="hiddenContent">
             <div style="max-width:600px">
+                <div>
+                    High contrast mode
+                    <label class="form-switch">
+                        <input type="checkbox">
+                        <i></i>
+                    </label>
+                </div>
+                <br />
                 <div>
                     Enable GPU Acceleration
                     <label class="form-switch">

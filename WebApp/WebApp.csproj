@@ -12,6 +12,7 @@
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.3" />
     <PackageReference Include="Microsoft.TypeScript.Compiler" Version="2.7.1" />
     <PackageReference Include="Microsoft.TypeScript.MSBuild" Version="2.7.1" />
+    <PackageReference Include="SharpZipLib" Version="0.86.0" />
   </ItemGroup>
 
   <ItemGroup>
