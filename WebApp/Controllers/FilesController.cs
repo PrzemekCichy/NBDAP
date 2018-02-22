@@ -17,15 +17,16 @@ namespace WebApp.Controllers
         {
             var path = this.Request.Query.ElementAt(0).Key;
             var watch = System.Diagnostics.Stopwatch.StartNew();
-            DecompressFiles(path);
 
-            var a = Directory.GetDirectories(path, "*", SearchOption.AllDirectories); //Start("E:\\Project\\2015\\06\\01\\00"); 
+            var a = Directory.GetFiles(path, "*.json", SearchOption.AllDirectories); //Start("E:\\Project\\2015\\06\\01\\00"); 
+            var b = Directory.GetFiles(path, "*.bz2", SearchOption.AllDirectories);
 
             Console.WriteLine(watch.ElapsedMilliseconds);
 
-            Dictionary<string, string[]> files = new Dictionary<string, string[]>()
+            Dictionary<string, int> files = new Dictionary<string, int>()
             {
-                { "Standard" , a }
+                { "Standard" , a.Count() },
+                { "Compressed" , b.Count() }
             };
 
             JsonResult result = new JsonResult(files);
@@ -33,12 +34,14 @@ namespace WebApp.Controllers
             return result;
         }
 
-        public void DecompressFiles(string directoryPath)
+        [HttpGet("FilesController/decompressFiles")]
+        public void DecompressFiles()
         {
-            //var path = this.Request.Query.ElementAt(0).Key;
+
+            var path = this.Request.Query.ElementAt(0).Key;
             var watch = System.Diagnostics.Stopwatch.StartNew();
 
-            Decompress.TransverseDirectory(directoryPath);
+            Decompress.TransverseDirectory(path);
 
             Debug.WriteLine(watch.ElapsedMilliseconds);
 

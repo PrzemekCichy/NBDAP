@@ -56,20 +56,30 @@
 
                 <div class="textConatiner prepareContainer" style="max-width: 800px;">
                     <div class="textHeader">Files</div>
+                    <br />
+                    <div>JSON files found:<div id="standardFilesFound" style="float:right; margin-right: 10px;">-</div></div>
+                    <div>BZ2 files found:<div id="compressedFilesFound" style="float:right; margin-right: 10px;">-</div></div>
+                    <div>Total files found:<div id="totalFilesFound" style="float:right; margin-right: 10px;">-</div></div>
+                    <p></p>
+                    <p></p>
                     <div id="standardFiles" class="entries"></div>
                 </div>
 
                 <div class="flex-container content" style="min-height: 100%; display: flex; align-items: center; justify-content: center;">
-                    <div style="min-height: 100%;">
-                        <button id="addFiles" style="color: #464646; height: 50px; width: 100%">Add Files</button>
-                        <p></p>
-                        <button id="decompressFiles" style="color: #464646; height: 50px; width: 100%">Decompress & Add</button>
-                    </div>
+ 
                 </div>
 
                 <div class="textConatiner prepareContainer">
                     <div class="textHeader">Selected Files</div>
-                    <div class="entries"></div>
+                    <div style="min-height: 100%;">
+                        <p>Decompress matched files</p>
+                        <div>Selected source: <div id="selectedSource"></div></div>
+                        <br />
+                        <button id="decompressFiles" style="color: #464646;">Decompress</button>
+                        <br />
+                        <div id="decompressErrorMessage"></div>
+                        <br />
+                    </div>
                 </div>
             </div>
             <!--<div style="color: #f53b3b">No files found.</div>-->

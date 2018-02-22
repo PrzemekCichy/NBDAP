@@ -26,7 +26,7 @@ namespace WebApp
 
             //Decompress each .bz2 file, read lines and filter tweets matching the search criteria
             //Set parrarel options to no of cores availible
-            Parallel.ForEach(files, new ParallelOptions { MaxDegreeOfParallelism = 12 }, (file) =>
+            Parallel.ForEach(files, new ParallelOptions { MaxDegreeOfParallelism = 16 }, (file) =>
             {
                 Console.WriteLine("Reading " + file.FullName);
                 //Open file stream to a compressed bz2 file
