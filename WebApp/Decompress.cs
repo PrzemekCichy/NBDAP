@@ -82,12 +82,9 @@ namespace WebApp
                 }
                 if (!failed)
                 {
-                    lock (errorLock)
+                    if (File.Exists(file.FullName))
                     {
-                        if (File.Exists(file.FullName))
-                        {
-                            File.Delete(file.FullName);
-                        }
+                        File.Delete(file.FullName);
                     }
                 }
             });
@@ -120,24 +117,24 @@ namespace WebApp
                 Parallel.ForEach(inputLines.GetConsumingEnumerable(), new ParallelOptions { MaxDegreeOfParallelism = 5 }, line =>
                 {
                     //Do some logic operations in here       
-                  //  try
-                 //   {
+                    try
+                    {
                         var tweet = JsonConvert.DeserializeObject<Tweet>(line);
                         if (tweet != null && tweet.Text != null)
                         {
                             tweetList.Add(tweet);
                         }
-                 //   }
-                   // catch (Exception e)
-                    //{
+                    }
+                    catch (Exception e)
+                    {
                         lock (errorLock)
                         {
                             using (StreamWriter sw = new StreamWriter("../errors.txt"))
                             {
-                            //    sw.WriteLine("Error reading line: " + e);
+                                sw.WriteLine("Error reading line: " + e);
                                 sw.WriteLine("Line:" + line + " in " + fileName);
                             }
-                  //      }
+                        }
                     }
                 });
             });
