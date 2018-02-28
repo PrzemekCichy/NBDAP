@@ -35,13 +35,15 @@ namespace WebApp.Controllers
         }
 
         [HttpGet("FilesController/decompressFiles")]
-        public void DecompressFiles()
+        public async Task DecompressFiles()
         {
+
 
             var path = this.Request.Query.ElementAt(0).Key;
             var watch = System.Diagnostics.Stopwatch.StartNew();
-
-            Decompress.TransverseDirectory(path);
+            var t = Task.Run(() => Decompress.TransverseDirectory(path));
+            //t.Wait();
+            await t;
 
             Debug.WriteLine(watch.ElapsedMilliseconds);
 

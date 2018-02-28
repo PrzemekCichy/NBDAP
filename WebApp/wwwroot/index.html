@@ -66,7 +66,7 @@
                 </div>
 
                 <div class="flex-container content" style="min-height: 100%; display: flex; align-items: center; justify-content: center;">
- 
+
                 </div>
 
                 <div class="textConatiner prepareContainer">
@@ -162,10 +162,13 @@
 
 
 
-        <div id="Insights" class="hiddenContent">
-            Insights
+        <div id="Insights" class="hiddenContent" style="width: 100%; text-shadow:none">
+            <div class="insightsContainer" style="float: left;width: 50%; text-shadow:none">Statistics</div>
+            <div class="insightsContainer" style="width: 50%;float: right; text-shadow:none">
+                <div id="tweetsMatchedChart" style="height: 550px; width:100%; text-shadow:none"></div>
+            </div>
+            <div class="insightsContainer">Sentiment Container</div>
         </div>
-
 
 
         <div id="Help" class="hiddenContent">
@@ -292,4 +295,7 @@
         </div>
     </bottomNav>
 </body>
+
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<script src="https://code.highcharts.com/stock/highstock.js"></script>
 <script src="main.js"></script>

@@ -363,3 +363,7 @@ button, input {
         display: flex;
         padding-left: 10px;
     }
+
+svg {
+    text-shadow: none;
+}

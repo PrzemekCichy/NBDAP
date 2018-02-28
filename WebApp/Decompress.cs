@@ -8,6 +8,7 @@ using System.Collections.Concurrent;
 using System.Text;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json;
+using System.Threading;
 
 namespace WebApp
 {
@@ -28,6 +29,8 @@ namespace WebApp
             //Set parrarel options to no of cores availible
             Parallel.ForEach(files, new ParallelOptions { MaxDegreeOfParallelism = 16 }, (file) =>
             {
+                bool failed = false;
+
                 Console.WriteLine("Reading " + file.FullName);
                 //Open file stream to a compressed bz2 file
                 using (FileStream compressedStream = new FileStream(file.FullName, FileMode.Open))
@@ -49,42 +52,52 @@ namespace WebApp
                     catch (Exception e)
                     {
                         failedPaths += file.DirectoryName + "-" + file.FullName + e.ToString() + " \n";
+                        failed = true;
                     }
-
-                    //Long string containing the uncompressed data
-                    string sUncompressed = Encoding.ASCII.GetString(uBuffer);
-
-                    var enableMinify = true;
-
-                    if (enableMinify == true)
+                    if (!failed)
                     {
-                        using (StreamWriter sw = new StreamWriter(file.FullName.Replace(".json.bz2", "") + ".json"))
+                        //Long string containing the uncompressed data
+                        string sUncompressed = Encoding.ASCII.GetString(uBuffer);
+
+                        var enableMinify = true;
+
+                        if (enableMinify == true)
                         {
-                            sw.Write(JsonConvert.SerializeObject(Minify(sUncompressed), Formatting.None));
+                            using (StreamWriter sw = new StreamWriter(file.FullName.Replace(".json.bz2", "") + ".json"))
+                            {
+                                sw.Write(JsonConvert.SerializeObject(Minify(sUncompressed, file.FullName), Formatting.None));
+                            }
+                        }
+                        else
+                        {
+                            using (StreamWriter sw = new StreamWriter(file.FullName.Replace(".json.bz2", "") + ".json"))
+                            {
+                                //Bug: The trimEnd method does not work for some reason....
+                                sw.Write(sUncompressed);
+                            }
                         }
                     }
-                    else
-                    {
-                        using (StreamWriter sw = new StreamWriter(file.FullName.Replace(".json.bz2", "") + ".json"))
-                        {
-                            //Bug: The trimEnd method does not work for some reason....
-                            sw.Write(sUncompressed);
-                        }
-                    }
-
                     Console.WriteLine("Finished reading " + file.FullName);
-                    if (File.Exists(file.FullName))
+
+                }
+                if (!failed)
+                {
+                    lock (errorLock)
                     {
-                        File.Delete(file.FullName);
+                        if (File.Exists(file.FullName))
+                        {
+                            File.Delete(file.FullName);
+                        }
                     }
                 }
-
             });
             Console.WriteLine("noOfFilesRead {0} \n noOfFilesDecompressed {1} \n  noOfCorruptedFiles {2} \n  failedPaths {3} \n ", noOfFilesRead, noOfFilesDecompressed, noOfCorruptedFiles, failedPaths);
             //Task.WaitAll(fileTask);
         }
 
-        public static ConcurrentBag<Tweet> Minify(string sUncompressed)
+        public static object errorLock = new object();
+
+        public static ConcurrentBag<Tweet> Minify(string sUncompressed, string fileName)
         {
             ConcurrentBag<Tweet> tweetList = new ConcurrentBag<Tweet>();
 
@@ -107,11 +120,24 @@ namespace WebApp
                 Parallel.ForEach(inputLines.GetConsumingEnumerable(), new ParallelOptions { MaxDegreeOfParallelism = 5 }, line =>
                 {
                     //Do some logic operations in here       
-
-                    var tweet = JsonConvert.DeserializeObject<Tweet>(line);
-                    if (tweet != null && tweet.Text != null)
-                    {
-                        tweetList.Add(tweet);
+                  //  try
+                 //   {
+                        var tweet = JsonConvert.DeserializeObject<Tweet>(line);
+                        if (tweet != null && tweet.Text != null)
+                        {
+                            tweetList.Add(tweet);
+                        }
+                 //   }
+                   // catch (Exception e)
+                    //{
+                        lock (errorLock)
+                        {
+                            using (StreamWriter sw = new StreamWriter("../errors.txt"))
+                            {
+                            //    sw.WriteLine("Error reading line: " + e);
+                                sw.WriteLine("Line:" + line + " in " + fileName);
+                            }
+                  //      }
                     }
                 });
             });

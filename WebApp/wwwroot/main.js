@@ -274,7 +274,7 @@ var App;
         var location = window.location.href;
         function GetFiles(path) {
             console.log(GetUrl("FilesController/getFiles"));
-            Log.logToDiv("manageErrorMessage", "Retrieving data", "info");
+            Log.logToDiv("manageErrorMessage", "Retrieving data...", "info");
             document.getElementById("totalFilesFound").innerHTML = "-";
             document.getElementById("standardFilesFound").innerHTML = "-";
             document.getElementById("compressedFilesFound").innerHTML = "-";
@@ -300,7 +300,7 @@ var App;
         }
         API.GetFiles = GetFiles;
         function Decompress(path) {
-            Log.logToDiv("decompressErrorMessage", "Decompressing files", "info");
+            Log.logToDiv("decompressErrorMessage", "Decompressing files...", "info");
             $.ajax({
                 url: GetUrl("FilesController/decompressFiles"),
                 type: "GET",
@@ -329,5 +329,140 @@ var App;
         }
         Helper.appendElement = appendElement;
     })(Helper || (Helper = {}));
+    var InitializeChart = /** @class */ (function () {
+        function InitializeChart(id, chartOptions, lineOptions) {
+            var _this = this;
+            this.AppendChart = function (elementId) {
+                return Highcharts.stockChart(elementId, {
+                    navigator: {
+                        enabled: true,
+                        adaptToUpdatedData: true //Wasted 2 h
+                    },
+                    chart: {
+                        zoomType: 'x'
+                    },
+                    rangeSelector: {
+                        enabled: false
+                    },
+                    animation: false,
+                    plotOptions: {
+                        series: {
+                            pointInterval: 1000 // one sec
+                        }
+                    },
+                    series: [{
+                            name: "name",
+                            type: "line",
+                            showInNavigator: true,
+                            data: [[1433140253659, 1], [1433140255659, 22], [1433140257659, 1]]
+                        }],
+                    xAxis: {
+                        type: 'datetime'
+                    }
+                });
+            };
+            this.ConfigureLineOptions = function (lineOptions) {
+                console.log("configure series");
+                for (var i = 0; i < _this.chart.series.length; i++) {
+                    _this.chart.addSeries({
+                        name: lineOptions[i].name,
+                        color: lineOptions[i].lineColour,
+                        showInNavigator: true,
+                        data: [216.4, 194.1, 95.6, 54.4, 29.9, 71.5, 106.4, 129.2, 144.0, 176.0, 135.6, 148.5]
+                    }, true);
+                }
+            };
+            this.SetTrendData = function (data) {
+                for (var i = 0; i < _this.chart.series.length; i++) {
+                    _this.chart.series[i].setData(data[i], false);
+                }
+            };
+            this.AddDataPoints = function (data) {
+                //This is a selector which will assign this.data to data if data passed as parameter is undefined
+                //data = data || this.data;
+                for (var i = 0; i < data.length; i++) {
+                    for (var j = 0; j < data[i].length; j++) {
+                        _this.chart.series[i].addPoint([data[i][j][0], data[i][j][1]], false);
+                    }
+                }
+            };
+            this.chart = this.AppendChart(id);
+            chartOptions && (console.log("Init options") && this.chart.update(chartOptions));
+            ///*lineOptions ? this.ConfigureLineOptions(lineOptions) :*/ this.ConfigureLineOptions([{ name: "default", lineColour: "red" }]);
+            this.chart.series[0].setData([[1433140253659, 1], [1433140255659, 22], [1433140257659, 1], [1433140258659, 1], [1433140259659, 4], [1433140267659, 8]], true);
+            this.chart.redraw();
+        }
+        return InitializeChart;
+    }());
+    var ParseReport;
+    (function (ParseReport) {
+        var sampleData = {
+            "Tweets": {
+                "12312312": {
+                    "noOfTweets": 1433140257659,
+                    "categoryTweets": {
+                        "Trump": 1312312,
+                        "Clinton": 12312
+                    },
+                    "noOfMatchedTweets": 132,
+                    "sentiment": [
+                        {
+                            "name": "Trump",
+                            "entries": [0.1, 0.5, 1, 0, 1, 0.54, 0.69, 0.71, 0.13],
+                            "negative": 45,
+                            "positive": 24,
+                            "average": 0.3
+                        },
+                        {
+                            "name": "Clinton",
+                            "entries": [0.11, 0.15, 1, 0.5, 1, 0.54, 0.97, 0.31, 0.63],
+                            "negative": 45,
+                            "positive": 24,
+                            "average": 0.3
+                        }
+                    ],
+                },
+                "1433140258664": {
+                    "noOfTweets": 12223,
+                    "noOfMatchedTweets": 232,
+                    "categoryTweets": {
+                        "Trump": 1312312,
+                        "Clinton": 12312
+                    },
+                    "sentiment": [
+                        {
+                            "name": "Trump",
+                            "entries": [0.2, 0.3, 0.7, 0.1, 14, 0.54, 0.69, 0.71, 0.13],
+                            "negative": 45,
+                            "positive": 24,
+                            "average": 0.3
+                        },
+                        {
+                            "name": "Clinton",
+                            "entries": [0.41, 0.25, 1, 0.59, 1, 0.94, 0.37, 0.61, 0.43],
+                            "negative": 45,
+                            "positive": 24,
+                            "average": 0.3
+                        }
+                    ]
+                }
+            },
+            "Keywords": {
+                "Trump2016": 21,
+                "Clinton2016": 11,
+                "ImwithHer": 11,
+                "Maga": 33
+            }
+        };
+        Object.keys(sampleData.Tweets).forEach(function (key, index) {
+            // key: the name of the object key
+            console.log(key, sampleData.Tweets[key]);
+            console.log(key, index, 'key=${e} value=${obj[e]}');
+            // index: the ordinal position of the key within the object
+        });
+    })(ParseReport || (ParseReport = {}));
+    //Export makes this variable visible outside of the module so that it can be used by 
+    //signalR methods
+    App.matchedTweetsChart = new InitializeChart("tweetsMatchedChart");
 })(App || (App = {}));
 //# sourceMappingURL=main.js.map
