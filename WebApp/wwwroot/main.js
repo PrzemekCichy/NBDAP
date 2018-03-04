@@ -330,72 +330,90 @@ var App;
         Helper.appendElement = appendElement;
     })(Helper || (Helper = {}));
     var InitializeChart = /** @class */ (function () {
-        function InitializeChart(id, chartOptions, lineOptions) {
+        function InitializeChart(id, title, chartOptions) {
             var _this = this;
-            this.AppendChart = function (elementId) {
-                return Highcharts.stockChart(elementId, {
-                    navigator: {
-                        enabled: true,
-                        adaptToUpdatedData: true //Wasted 2 h
-                    },
-                    chart: {
-                        zoomType: 'x'
-                    },
-                    rangeSelector: {
-                        enabled: false
-                    },
-                    animation: false,
-                    plotOptions: {
-                        series: {
-                            pointInterval: 1000 // one sec
-                        }
-                    },
-                    series: [{
-                            name: "name",
-                            type: "line",
-                            showInNavigator: true,
-                            data: [[1433140253659, 1], [1433140255659, 22], [1433140257659, 1]]
-                        }],
-                    xAxis: {
-                        type: 'datetime'
+            this.AppendChart = function (elementId, chartOptions) {
+                return Highcharts.stockChart(elementId, chartOptions);
+            };
+            this.AddNewSeries = function (seriesOptions) {
+                _this.chart.addSeries(seriesOptions);
+            };
+            this.UpdateSeries = function (index, data, redraw) {
+                _this.chart.series[index].setData(data, redraw ? true : false);
+            };
+            this.AddDatapoint = function () {
+            };
+            chartOptions = chartOptions || {
+                title: {
+                    text: title
+                },
+                navigator: {
+                    enabled: true,
+                    adaptToUpdatedData: true //Wasted 2 h
+                },
+                chart: {
+                    zoomType: 'x'
+                },
+                rangeSelector: {
+                    enabled: false
+                },
+                animation: false,
+                plotOptions: {
+                    series: {
+                        pointInterval: 1000 // one sec
                     }
-                });
-            };
-            this.ConfigureLineOptions = function (lineOptions) {
-                console.log("configure series");
-                for (var i = 0; i < _this.chart.series.length; i++) {
-                    _this.chart.addSeries({
-                        name: lineOptions[i].name,
-                        color: lineOptions[i].lineColour,
-                        showInNavigator: true,
-                        data: [216.4, 194.1, 95.6, 54.4, 29.9, 71.5, 106.4, 129.2, 144.0, 176.0, 135.6, 148.5]
-                    }, true);
+                },
+                xAxis: {
+                    type: 'datetime'
                 }
             };
-            this.SetTrendData = function (data) {
-                for (var i = 0; i < _this.chart.series.length; i++) {
-                    _this.chart.series[i].setData(data[i], false);
-                }
-            };
-            this.AddDataPoints = function (data) {
-                //This is a selector which will assign this.data to data if data passed as parameter is undefined
-                //data = data || this.data;
-                for (var i = 0; i < data.length; i++) {
-                    for (var j = 0; j < data[i].length; j++) {
-                        _this.chart.series[i].addPoint([data[i][j][0], data[i][j][1]], false);
-                    }
-                }
-            };
-            this.chart = this.AppendChart(id);
-            chartOptions && (console.log("Init options") && this.chart.update(chartOptions));
+            this.chart = this.AppendChart(id, chartOptions);
             ///*lineOptions ? this.ConfigureLineOptions(lineOptions) :*/ this.ConfigureLineOptions([{ name: "default", lineColour: "red" }]);
-            this.chart.series[0].setData([[1433140253659, 1], [1433140255659, 22], [1433140257659, 1], [1433140258659, 1], [1433140259659, 4], [1433140267659, 8]], true);
-            this.chart.redraw();
+            //this.chart.series[0].setData([[1433140253659, 1], [1433140255659, 22], [1433140257659, 1], [1433140258659, 1], [1433140259659, 4], [1433140267659, 8]], true);
+            //this.chart.redraw();
         }
         return InitializeChart;
     }());
     var ParseReport;
     (function (ParseReport) {
+        ParseReport.parsedReport = {
+            Tweets: {
+                TotalTweets: 1433140257659,
+                TotalTweetsMatched: 3140257659,
+                Tweets: [[1454311858666, 1121], [1454311859666, 121], [1454311860666, 2121], [1454311861666, 1421], [1454311862666, 7121], [1454311863666, 1121], [1454311864666, 6121]],
+                MatchedTweets: [[1454311858666, 123], [1454311859666, 111], [1454311860666, 442], [1454311861666, 345], [1454311862666, 1178], [1454311863666, 67], [1454311864666, 1200]],
+                Keywords: {
+                    Trump2016: [[1454311858666, 100], [1454311859666, 100], [1454311860666, 300], [1454311861666, 200], [1454311862666, 678], [1454311863666, 37], [1454311864666, 800]],
+                    Clinton2016: [[1454311858666, 23], [1454311859666, 11], [1454311860666, 142], [1454311861666, 145], [1454311862666, 500], [1454311863666, 30], [1454311864666, 400]],
+                },
+                Sentiment: {
+                    Trump: [[1454311858666, 0.65], [1454311859666, 0.43], [1454311860666, 0.23], [1454311861666, 0.64], [1454311862666, 0.34], [1454311863666, 0.76], [1454311864666, 0.45]],
+                    Clinton: [[1454311858666, 0.5], [1454311859666, 0.7], [1454311860666, 0.2], [1454311861666, 0.23], [1454311862666, 0.52], [1454311863666, 0.98], [1454311864666, 0.1]],
+                },
+            },
+            Keywords: {
+                Trump2016: [[1454311858666, 100], [1454311859666, 100], [1454311860666, 300], [1454311861666, 200], [1454311862666, 678], [1454311863666, 37], [1454311864666, 800]],
+                Clinton2016: [[1454311858666, 23], [1454311859666, 11], [1454311860666, 142], [1454311861666, 145], [1454311862666, 500], [1454311863666, 30], [1454311864666, 400]],
+                Tweets: [[1454311858666, 1121], [1454311859666, 121], [1454311860666, 2121], [1454311861666, 1421], [1454311862666, 7121], [1454311863666, 1121], [1454311864666, 6121]],
+                MatchedTweets: [[1454311858666, 123], [1454311859666, 111], [1454311860666, 442], [1454311861666, 345], [1454311862666, 1178], [1454311863666, 67], [1454311864666, 1200]],
+            }
+        };
+        //Get int total tweets
+        console.log("parsedReport.Tweets.totalTweets", ParseReport.parsedReport.Tweets.TotalTweets);
+        //Get int total tweets found
+        console.log("parsedReport.Tweets.totalTweetsMatched", ParseReport.parsedReport.Tweets.TotalTweetsMatched);
+        //Tweets by timestamp
+        console.log("parsedReport.Tweets.tweets", ParseReport.parsedReport.Tweets.Tweets);
+        //Tweets matched
+        console.log("parsedReport.Tweets.matchedTweets", ParseReport.parsedReport.Tweets.MatchedTweets);
+        //Tweets matched per category 
+        Object.keys(ParseReport.parsedReport.Tweets.Keywords).forEach(function (categoryName) {
+            console.log("parsedReport.Tweets.categoryTweets", ParseReport.parsedReport.Tweets.Keywords[categoryName]);
+        });
+        //Sentiment for Each category
+        Object.keys(ParseReport.parsedReport.Tweets.Sentiment).forEach(function (categoryName) {
+            console.log("parsedReport.Tweets.sentiment", ParseReport.parsedReport.Tweets.Sentiment[categoryName]);
+        });
         var sampleData = {
             "Tweets": {
                 "12312312": {
@@ -454,15 +472,58 @@ var App;
                 "Maga": 33
             }
         };
-        Object.keys(sampleData.Tweets).forEach(function (key, index) {
+        Object.keys(sampleData.Tweets).forEach(function (timestamp, index) {
             // key: the name of the object key
-            console.log(key, sampleData.Tweets[key]);
-            console.log(key, index, 'key=${e} value=${obj[e]}');
+            console.log(sampleData.Tweets[timestamp].categoryTweets.Trump);
+            console.log(sampleData.Tweets[timestamp].categoryTweets.Clinton);
+            console.log(sampleData.Tweets[timestamp].noOfTweets);
+            console.log(sampleData.Tweets[timestamp].noOfMatchedTweets);
+            console.log(timestamp, sampleData.Tweets[timestamp]);
+            console.log(timestamp, index, 'key=${e} value=${obj[e]}');
             // index: the ordinal position of the key within the object
         });
     })(ParseReport || (ParseReport = {}));
     //Export makes this variable visible outside of the module so that it can be used by 
     //signalR methods
-    App.matchedTweetsChart = new InitializeChart("tweetsMatchedChart");
+    App.matchedTweetsChart = new InitializeChart("tweetsMatchedChart", "Tweets found chart");
+    //matchedTweetsChart.chart.
+    App.matchedTweetsChart.AddNewSeries({
+        name: "Total Tweets Found",
+        type: "line",
+        showInNavigator: true,
+        data: ParseReport.parsedReport.Tweets.Tweets
+    });
+    App.matchedTweetsChart.AddNewSeries({
+        name: "Tweets matching search",
+        type: "line",
+        showInNavigator: true,
+        data: ParseReport.parsedReport.Tweets.MatchedTweets
+    });
+    //For each category we want to create a chart
+    //Tweets matched per category 
+    document.getElementById("InsightsCategories").insertAdjacentHTML('beforeend', "<div id='KeywordsInsights'" + " style='height: 450px; width: 100 %; text-shadow:none'></div>");
+    App.KeywordsChart = new InitializeChart("KeywordsInsights", "Keywords found chart");
+    Object.keys(ParseReport.parsedReport.Tweets.Keywords).forEach(function (categoryName) {
+        App.KeywordsChart.AddNewSeries({
+            name: categoryName,
+            type: "line",
+            showInNavigator: true,
+            data: ParseReport.parsedReport.Tweets.Keywords[categoryName]
+        });
+    });
+    //Sentiment for Each category
+    var SentimentChart = [];
+    Object.keys(ParseReport.parsedReport.Tweets.Sentiment).forEach(function (categoryName, index) {
+        document.getElementById("InsightsCategories").insertAdjacentHTML('beforeend', "<div id='" + categoryName + "SentimentInsights" + "' style='height: 350px; width: 100 %; text-shadow:none'></div>");
+        SentimentChart.push(new InitializeChart(categoryName + "SentimentInsights", "Sentiment for " + categoryName));
+        SentimentChart[index].AddNewSeries({
+            name: categoryName,
+            negativeColor: '#0088FF',
+            type: "area",
+            showInNavigator: true,
+            data: ParseReport.parsedReport.Tweets.Sentiment[categoryName]
+        });
+    });
+    //matchedTweetsChart.AddDataPoints
 })(App || (App = {}));
 //# sourceMappingURL=main.js.map
