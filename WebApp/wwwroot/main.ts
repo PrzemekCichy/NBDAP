@@ -164,6 +164,13 @@ module App {
                 }
             });
         }
+
+        var input = <HTMLInputElement>document.getElementById("searchPath");
+        document.getElementById("searchButton").addEventListener("click", () => {
+            API.Search(input.value)
+        });
+
+        
     }
 
     module Model {
@@ -347,6 +354,24 @@ module App {
 
             $.ajax({
                 url: GetUrl("FilesController/decompressFiles"),
+                type: "GET",
+                dataType: "text",
+                data: path,
+                processData: false,
+                contentType: "text/xml; charset=\"utf-8\"",
+                success: () => { },
+                error: () => { Log.logToDiv("decompressErrorMessage", "Error occured while trying to retrieve directories from the selected location.", "error") }
+            }).done(function (data) {
+                Log.logToDiv("decompressErrorMessage", "Finished decompressing.", "info");
+                //Log.clearDiv("decompressErrorMessage");
+            });
+        }
+
+        export function Search(path: string) {
+            Log.logToDiv("decompressErrorMessage", "Decompressing files...", "info");
+
+            $.ajax({
+                url: GetUrl("SearchController/search"),
                 type: "GET",
                 dataType: "text",
                 data: path,
@@ -624,12 +649,12 @@ module App {
     var SentimentChart = [];
     Object.keys(ParseReport.parsedReport.Tweets.Sentiment).forEach((categoryName, index) => {
         document.getElementById("InsightsCategories").insertAdjacentHTML('beforeend',
-            "<div id='" + categoryName + "SentimentInsights" + "' style='height: 350px; width: 100 %; text-shadow:none'></div>");
+            "<div id='" + categoryName + "SentimentInsights" + "' style='height: 350px; width: 100 %; text-shadow:none'></div><br/>");
         SentimentChart.push(new InitializeChart(categoryName + "SentimentInsights", "Sentiment for " + categoryName));
         SentimentChart[index].AddNewSeries({
             name: categoryName,
             negativeColor: '#0088FF',
-            type: "area",
+            type: "column",
             showInNavigator: true,
             data: ParseReport.parsedReport.Tweets.Sentiment[categoryName]
         });

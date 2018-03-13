@@ -94,9 +94,9 @@ namespace WebApp
 
         public static object errorLock = new object();
 
-        public static ConcurrentBag<Tweet> Minify(string sUncompressed, string fileName)
+        public static ConcurrentBag<_Tweet> Minify(string sUncompressed, string fileName)
         {
-            ConcurrentBag<Tweet> tweetList = new ConcurrentBag<Tweet>();
+            ConcurrentBag<_Tweet> tweetList = new ConcurrentBag<_Tweet>();
 
             var inputLines = new BlockingCollection<string>();
 
@@ -119,10 +119,10 @@ namespace WebApp
                     //Do some logic operations in here       
                     try
                     {
-                        var tweet = JsonConvert.DeserializeObject<Tweet>(line);
-                        if (tweet != null && tweet.Text != null)
+                        var _Tweet = JsonConvert.DeserializeObject<_Tweet>(line);
+                        if (_Tweet != null && _Tweet.Text != null)
                         {
-                            tweetList.Add(tweet);
+                            tweetList.Add(_Tweet);
                         }
                     }
                     catch (Exception e)
@@ -145,7 +145,7 @@ namespace WebApp
         }
     }
 
-    public partial class Tweet
+    public partial class _Tweet
     {
         [JsonProperty("text")]
         public string Text { get; set; }
@@ -234,7 +234,7 @@ namespace WebApp
 
     public static class Serialize
     {
-        public static string ToJson(this Tweet self) => JsonConvert.SerializeObject(self);
+        public static string ToJson(this _Tweet self) => JsonConvert.SerializeObject(self);
     }
 
 }
