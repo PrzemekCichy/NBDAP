@@ -227,68 +227,151 @@ namespace WebApp.Controllers
                 "wehatehillary",
                 "whatmakeshillaryshortcircuit"
               };
-            hashtags = hashtags.ConvertAll(d => d.ToUpper());
 
-            trie.Add(hashtags);
+            hashtags = hashtags.ConvertAll(d => d.ToLower());
+
+            for (int i = 0; i < hashtags.Count; i++)
+            {
+                trie.Add(hashtags[i], (i).ToString());
+            }
 
             // build search tree
             trie.Build();
             Console.WriteLine("Trie built.");
 
-            Search.Match(path, trie);
+            Search.Match(path, trie, hashtags);
 
         }
 
         public static class Search
         {
-            public static int TweetsFound= 0;
-            public static int TweetsMatched=0;
 
-            public static void Match(string path, AhoCorasick.Trie trie)
+            public static object keywordLock = new object();
+            public static int TweetsFound = 0;
+            public static int TweetsMatched = 0;
+
+            //Create a data structure for no of occurrences of each searched word
+            public static Dictionary<string, int> tags;
+
+            //We need to check whether the world is not a sub word.
+            //We do it after the word is matched using aho-corasick
+            private static bool IsEnglishLetter(char c)
             {
-                DirectoryInfo rootFolder = new DirectoryInfo(path);
+                return (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z');
+            }
 
-                //Filter given directory for json files and add them to a list of files
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="path"></param>
+            /// <param name="trie"></param>
+            /// <param name="capitalizedHashtags"></param>
+            /// <param name="hashtags"></param>
+            public static void Match(string path, AhoCorasick.Trie trie, List<string> hashtags)
+            {
+
+                DirectoryInfo rootFolder = new DirectoryInfo(path);
                 var files = rootFolder.EnumerateFiles("*.json", SearchOption.AllDirectories);
+
+                tags = hashtags.ToDictionary(x => x, x => 0);
 
                 Parallel.ForEach(files, new ParallelOptions { MaxDegreeOfParallelism = 16 }, (file1) =>
                 {
-
                     int found = 0;
                     int matched = 0;
+
                     Console.WriteLine("Reading " + file1.FullName);
-                    
+
                     var jsonText = System.IO.File.ReadAllText(file1.FullName);
                     var tweets = JsonConvert.DeserializeObject<IList<_Tweet>>(jsonText);
-                    var matchedTweets = new List<_Tweet>();
-                    for (var i = 0; i < tweets.Count; i++) { 
-                        if (tweets[i] == null) {
-                            continue;
-                        }
-                        found++;
-                        // find words
-                        foreach (string word in trie.Find(tweets[i].Text.ToUpper()))
+
+                    var matchedTweets = new List<string>();
+                    for (var i = 0; i < tweets.Count; i++)
+                    {
+                        String text = tweets[i].Text.ToLower();
+
+                        if (tweets[i] == null) continue;
+
+                        List<int> positions = new List<int>();
+
+                        foreach (string position in trie.Find(text))
                         {
-                            matched++;
-                            matchedTweets.Add(tweets[i]);
+                            positions.Add(Int16.Parse(position));
+                        }
+
+                        found++;
+
+                        if (positions.Count() == 0) continue;
+
+                        //check if it is non alfa char                        
+                        var verifiedWords = new List<string>();
+
+                        foreach (int wordNo in positions)
+                        {
+                            string word = hashtags.ElementAt(wordNo);
+                            int startingPosition = text.IndexOf(word);
+                            int endingPosition = startingPosition + word.Count();
+
+                            //If beggining or end of text, assume its not english letter                            
+                            bool front = startingPosition == 0 || !IsEnglishLetter(text.ElementAt(startingPosition - 1));
+                            var a = text.Count();
+                            bool end = endingPosition == text.Count() || !IsEnglishLetter(text.ElementAt(endingPosition));
+
+                            if (front && end) verifiedWords.Add(word);
+                        }
+
+                        matched++;
+                        matchedTweets.Add(JsonConvert.SerializeObject(tweets[i]));
+
+                        //Check if what happens here is correct
+                        foreach (string word in verifiedWords)
+                        {
+                            lock (keywordLock)
+                            {
+                                tags[word] += 1;
+                            }
                         }
                     }
+
                     Interlocked.Add(ref TweetsFound, found);
                     Interlocked.Add(ref TweetsMatched, matched);
-                    using (StreamWriter sw = new StreamWriter(file1.DirectoryName + "/Matched" + file1.Name + ".txt"))
-                    {
-                        sw.Write(JsonConvert.SerializeObject(matchedTweets, Formatting.Indented));
-                        // sw.Write(JsonConvert.SerializeObject(objectToSerialize, Formatting.Indented));
+                    System.IO.File.WriteAllLines(file1.DirectoryName + "/Matched" + file1.Name + ".txt", matchedTweets);
 
-                    }
                 });
-                using (StreamWriter sw = new StreamWriter(path + "/MatchedStats.txt"))
+
+                bool mergeIntoOneFile = true;
+                if (mergeIntoOneFile) MergeSearchResults(path, "output.txt");
+
+
+                using (StreamWriter sw = new StreamWriter(path + "/SearchStats.txt"))
                 {
-                    sw.Write("Tweets Found: " + TweetsFound + " Tweets Matched: " + TweetsMatched);
+                    sw.Write("Tweets Found: " + TweetsFound + "\n Tweets Matched: " + TweetsMatched + "\n");
+                    sw.Write(JsonConvert.SerializeObject(tags, Formatting.Indented));
                     // sw.Write(JsonConvert.SerializeObject(objectToSerialize, Formatting.Indented));
                     Interlocked.Increment(ref TweetsFound);
                 }
             }
+        }
+
+        public static void MergeSearchResults(string path, string outputName)
+        {
+            var files = new DirectoryInfo(path).EnumerateFiles("*.txt", SearchOption.AllDirectories).Where(item => item.Name.ToLower().Contains("matched"));
+
+            //Go through directory and get files
+            //Concatinate the files
+            using (var output = System.IO.File.Create(path + "/" + outputName))
+            {
+                foreach (var file in files)
+                {
+                    using (var input = System.IO.File.OpenRead(file.FullName))
+                    {
+                        input.CopyTo(output);
+                    }
+                    System.IO.File.Delete(file.FullName);
+                }
+            }
+
+
         }
 
     }
