@@ -23,9 +23,10 @@ module App {
         var $active: HTMLElement = document.getElementById("Home");
         var $active_content: HTMLElement = document.getElementById("Home");
 
+        var active = false;
+
         var setUpListeners = (element: Element, callback: Function) => {
             //selectedButton
-            element.children.length;
 
             for (var i = 0; i < element.children.length; i++) {
                 element.children[i].addEventListener("click", (element: any) => {
@@ -80,6 +81,7 @@ module App {
                 $topNav.style.borderBottom = "4px solid rgba(255, 255, 255, 0.1)";
                 $topNav.style.borderTop = "";
                 $bottomNav.style.display = "inline-flex";
+                active = false;
                 return;
             }
             for (var i = 1; i < $topNav.children.length; i++) {
@@ -90,10 +92,19 @@ module App {
             $topNav.style.transform = "translateY(" + (document.body.clientHeight - 54) + "px)";
             document.getElementById("Home_Button").parentElement.style.display = "inline-block";
             $bottomNav.style.display = "none";
-
+            active = true;
         });
 
-        setUpListeners($bottomNav, () => { });
+        setUpListeners($bottomNav, () => {
+            active = false;
+        });
+
+        $(window).resize(() => {
+            console.log("resize");
+            if (active) {
+                $topNav.style.transform = "translateY(" + (document.body.clientHeight - 54) + "px)";
+            }
+        });
     }
 
     module Manage {
@@ -170,7 +181,7 @@ module App {
             API.Search(input.value)
         });
 
-        
+
     }
 
     module Model {

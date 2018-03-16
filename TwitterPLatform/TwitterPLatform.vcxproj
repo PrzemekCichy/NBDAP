@@ -23,7 +23,7 @@
     <ProjectGuid>{5F141B01-19AE-4108-9E28-E0303118FEB3}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>TwitterPLatform</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
     <ProjectName>TwitterPlatform</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />

@@ -6,9 +6,9 @@ var App;
         var $bottomNav = document.getElementsByTagName("bottomNav")[0];
         var $active = document.getElementById("Home");
         var $active_content = document.getElementById("Home");
+        var active = false;
         var setUpListeners = function (element, callback) {
             //selectedButton
-            element.children.length;
             for (var i = 0; i < element.children.length; i++) {
                 element.children[i].addEventListener("click", function (element) {
                     var $target = element.target;
@@ -60,6 +60,7 @@ var App;
                 $topNav.style.borderBottom = "4px solid rgba(255, 255, 255, 0.1)";
                 $topNav.style.borderTop = "";
                 $bottomNav.style.display = "inline-flex";
+                active = false;
                 return;
             }
             for (var i = 1; i < $topNav.children.length; i++) {
@@ -70,8 +71,17 @@ var App;
             $topNav.style.transform = "translateY(" + (document.body.clientHeight - 54) + "px)";
             document.getElementById("Home_Button").parentElement.style.display = "inline-block";
             $bottomNav.style.display = "none";
+            active = true;
         });
-        setUpListeners($bottomNav, function () { });
+        setUpListeners($bottomNav, function () {
+            active = false;
+        });
+        $(window).resize(function () {
+            console.log("resize");
+            if (active) {
+                $topNav.style.transform = "translateY(" + (document.body.clientHeight - 54) + "px)";
+            }
+        });
     })(Navigator || (Navigator = {}));
     var Manage;
     (function (Manage) {
