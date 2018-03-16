@@ -313,11 +313,16 @@ namespace WebApp.Controllers
                             int endingPosition = startingPosition + word.Count();
 
                             //If beggining or end of text, assume its not english letter                            
-                            bool front = startingPosition == 0 || !IsEnglishLetter(text.ElementAt(startingPosition - 1));
-                            var a = text.Count();
-                            bool end = endingPosition == text.Count() || !IsEnglishLetter(text.ElementAt(endingPosition));
+                            bool front = startingPosition == 0 || (startingPosition != -1 && !IsEnglishLetter(text.ElementAt(startingPosition - 1)));
 
-                            if (front && end) verifiedWords.Add(word);
+                            bool end = endingPosition == text.Count() || (endingPosition != -1 && !IsEnglishLetter(text.ElementAt(endingPosition)));
+
+                            if (front && end){
+                                verifiedWords.Add(word);
+
+                            } else {
+                                continue;
+                            }
                         }
 
                         matched++;
