@@ -47,7 +47,7 @@ var App;
         setUpListeners($topNav, function (id) {
             console.log(id, $active_content);
             $active_content.style.position = "relative";
-            $active_content.style.top = -document.body.clientHeight + "px";
+            $active_content.style.top = -document.body.clientHeight + 50 + "px";
             $active_content.style.transitionDuration = " 0.5s";
             $active_content.style.transform = "translateY(" + document.body.clientHeight + "px)";
             if (id == "Home") {
@@ -418,8 +418,8 @@ var App;
                     Clinton2016: [[1454311858666, 23], [1454311859666, 11], [1454311860666, 142], [1454311861666, 145], [1454311862666, 500], [1454311863666, 30], [1454311864666, 400]],
                 },
                 Sentiment: {
-                    Trump: [[1454311858666, 0.65], [1454311859666, 0.43], [1454311860666, 0.23], [1454311861666, 0.64], [1454311862666, 0.34], [1454311863666, 0.76], [1454311864666, 0.45]],
-                    Clinton: [[1454311858666, 0.5], [1454311859666, 0.7], [1454311860666, 0.2], [1454311861666, 0.23], [1454311862666, 0.52], [1454311863666, 0.98], [1454311864666, 0.1]],
+                    Trump: [],
+                    Clinton: [],
                 },
             },
             Keywords: {
@@ -429,6 +429,12 @@ var App;
                 MatchedTweets: [[1454311858666, 123], [1454311859666, 111], [1454311860666, 442], [1454311861666, 345], [1454311862666, 1178], [1454311863666, 67], [1454311864666, 1200]],
             }
         };
+        var timestamp = 1454311858666;
+        for (var i = 0; i < 10000; i++) {
+            ParseReport.parsedReport.Tweets.Sentiment.Trump.push([timestamp, Math.random()]);
+            ParseReport.parsedReport.Tweets.Sentiment.Clinton.push([timestamp, Math.random()]);
+            timestamp += 1000;
+        }
         //Get int total tweets
         console.log("parsedReport.Tweets.totalTweets", ParseReport.parsedReport.Tweets.TotalTweets);
         //Get int total tweets found
@@ -527,34 +533,788 @@ var App;
     App.matchedTweetsChart.AddNewSeries({
         name: "Tweets matching search",
         type: "line",
+        color: "#F24738",
         showInNavigator: true,
         data: ParseReport.parsedReport.Tweets.MatchedTweets
     });
+    App.matchedTweetsChart.chart.update({
+        chart: {
+            backgroundColor: null
+        }
+    });
     //For each category we want to create a chart
     //Tweets matched per category 
-    document.getElementById("InsightsCategories").insertAdjacentHTML('beforeend', "<div id='KeywordsInsights'" + " style='height: 450px; width: 100 %; text-shadow:none'></div>");
-    App.KeywordsChart = new InitializeChart("KeywordsInsights", "Keywords found chart");
-    Object.keys(ParseReport.parsedReport.Tweets.Keywords).forEach(function (categoryName) {
-        App.KeywordsChart.AddNewSeries({
-            name: categoryName,
-            type: "line",
-            showInNavigator: true,
-            data: ParseReport.parsedReport.Tweets.Keywords[categoryName]
-        });
-    });
+    document.getElementById("InsightsCategories").insertAdjacentHTML('beforeend', "<div id='KeywordsInsights'" + " style='height: 350px; width: 100 %; text-shadow:none'></div>");
     //Sentiment for Each category
     var SentimentChart = [];
     Object.keys(ParseReport.parsedReport.Tweets.Sentiment).forEach(function (categoryName, index) {
-        document.getElementById("InsightsCategories").insertAdjacentHTML('beforeend', "<div id='" + categoryName + "SentimentInsights" + "' style='height: 350px; width: 100 %; text-shadow:none'></div><br/>");
+        document.getElementById("InsightsCategories").insertAdjacentHTML('beforeend', "<div id='" + categoryName + "SentimentInsights" + "' style='height: 250px; width: 100 %; text-shadow:none'></div><br/>");
         SentimentChart.push(new InitializeChart(categoryName + "SentimentInsights", "Sentiment for " + categoryName));
+        SentimentChart[index].chart.update({
+            chart: {
+                backgroundColor: null
+            }
+        });
         SentimentChart[index].AddNewSeries({
             name: categoryName,
-            negativeColor: '#0088FF',
             type: "column",
+            color: "#F24738",
             showInNavigator: true,
             data: ParseReport.parsedReport.Tweets.Sentiment[categoryName]
         });
     });
+    var m = [30, 160, 0, 160], // top right bottom left
+    w = 1280 - m[1] - m[3], // width
+    h = 4200 - m[0] - m[2], // height
+    x = d3.scale.pow().range([0, w]), y = 15, // bar height
+    z = d3.scale.ordinal().range(["#F24738"]); // bar color
+    var hierarchy = d3.layout.partition()
+        .value(function (d) {
+        return d.value;
+    });
+    var xAxis = d3.svg.axis()
+        .scale(x)
+        .orient("top");
+    var svg = d3.select("#KeywordsContainer").append("svg:svg")
+        .attr("width", w + m[1] + m[3])
+        .attr("height", h + m[0] + m[2])
+        .append("svg:g")
+        .attr("transform", "translate(" + m[3] + "," + m[0] + ")");
+    svg.append("svg:rect")
+        .attr("class", "background")
+        .attr("width", w)
+        .attr("height", h);
+    svg.append("svg:g")
+        .attr("class", "x axis")
+        .style("fill", "white");
+    svg.append("svg:g")
+        .attr("class", "y axis")
+        .append("svg:line")
+        .attr("y1", "100%")
+        .style("fill", "white");
+    var root = getJson();
+    hierarchy.nodes(root);
+    x.domain([1, root.value]).nice();
+    down(root, 0);
+    function down(d, i) {
+        if (!d.children || this.__transition__)
+            return;
+        var duration = d3.event && d3.event.altKey ? 7500 : 750, delay = duration / d.children.length;
+        // Mark any currently-displayed bars as exiting.
+        var exit = svg.selectAll(".enter").attr("class", "exit");
+        // Entering nodes immediately obscure the clicked-on bar, so hide it.
+        exit.selectAll("rect").filter(function (p) {
+            return p === d;
+        })
+            .style("fill-opacity", 1e-6);
+        // Enter the new bars for the clicked-on data.
+        // Per above, entering bars are immediately visible.
+        console.log(d);
+        var enter = bar(d)
+            .attr("transform", stack(i))
+            .style("opacity", 1);
+        // Have the text fade-in, even though the bars are visible.
+        // Color the bars as parents; they will fade to children if appropriate.
+        enter.select("text").style("fill", "white");
+        enter.select("rect").style("fill", z(true));
+        // Update the x-scale domain.
+        x.domain([1, d3.max(d.children, function (d) {
+                return d.value;
+            })]).nice();
+        // Update the x-axis.
+        svg.selectAll(".x.axis").transition()
+            .duration(duration)
+            .call(xAxis);
+        // Transition entering bars to their new position.
+        var enterTransition = enter.transition()
+            .duration(duration)
+            .delay(function (d, i) {
+            return i * delay;
+        })
+            .attr("transform", function (d, i) {
+            return "translate(0," + y * i * 1.2 + ")";
+        });
+        // Transition entering text.
+        enterTransition.select("text").style("fill-opacity", 1);
+        // Transition entering rects to the new x-scale.
+        enterTransition.select("rect")
+            .attr("width", function (d) {
+            return x(d.value);
+        })
+            .style("fill", function (d) {
+            return z(!!d.children);
+        });
+        // Transition exiting bars to fade out.
+        var exitTransition = exit.transition()
+            .duration(duration)
+            .style("opacity", 1e-6)
+            .remove();
+        // Transition exiting bars to the new x-scale.
+        exitTransition.selectAll("rect").attr("width", function (d) {
+            return x(d.value);
+        });
+        // Rebind the current node to the background.
+        svg.select(".background").data([d]).transition().duration(duration * 2);
+        d.index = i;
+    }
+    // Creates a set of bars for the given data node, at the specified index.
+    function bar(d) {
+        var bar = svg.insert("svg:g", ".y.axis")
+            .attr("class", "enter")
+            .attr("transform", "translate(0,5)")
+            .selectAll("g")
+            .data(d.children)
+            .enter().append("svg:g")
+            .style("cursor", function (d) {
+            return !d.children ? null : "pointer";
+        })
+            .on("click", down);
+        bar.append("svg:text")
+            .attr("x", -6)
+            .attr("y", y / 2)
+            .attr("dy", ".35em")
+            .attr("text-anchor", "end")
+            .text(function (d) {
+            return d.name;
+        });
+        bar.append("svg:rect")
+            .attr("width", function (d) {
+            console.log(d);
+            return x(d.value);
+        })
+            .attr("height", y);
+        bar.append("svg:text")
+            .attr("x", w)
+            .attr("y", y / 2)
+            .attr("dy", ".35em")
+            .attr("text-anchor", "end")
+            .text(function (d) {
+            return d.value;
+        }).style("fill", "#fff");
+        return bar;
+    }
+    // A stateful closure for stacking bars horizontally.
+    function stack(i) {
+        var x0 = 0;
+        return function (d) {
+            var tx = "translate(" + x0 + "," + y * i * 1.2 + ")";
+            x0 += x(d.value);
+            return tx;
+        };
+    }
+    function getJson() {
+        return {
+            "name": "flare",
+            "children": [{
+                    "name": "alwaystrump",
+                    "value": 13678
+                }, {
+                    "name": "babesfortrump",
+                    "value": 631
+                }, {
+                    "name": "bikers4trump",
+                    "value": 10196
+                }, {
+                    "name": "bikersfortrump",
+                    "value": 988
+                }, {
+                    "name": "blacks4trump",
+                    "value": 1644
+                }, {
+                    "name": "buildthatwall",
+                    "value": 1326
+                }, {
+                    "name": "buildthewall",
+                    "value": 6503
+                }, {
+                    "name": "cafortrump",
+                    "value": 596
+                }, {
+                    "name": "democrats4trump",
+                    "value": 192
+                }, {
+                    "name": "donuldtrumpforpresident",
+                    "value": 1
+                }, {
+                    "name": "feelthetrump",
+                    "value": 368
+                }, {
+                    "name": "femineamerica4trump",
+                    "value": 1
+                }, {
+                    "name": "gays4trump",
+                    "value": 576
+                }, {
+                    "name": "gaysfortrump",
+                    "value": 1883
+                }, {
+                    "name": "gotrump",
+                    "value": 1003
+                }, {
+                    "name": "heswithus",
+                    "value": 723
+                }, {
+                    "name": "imwithhim",
+                    "value": 1041
+                }, {
+                    "name": "imwithyou",
+                    "value": 12096
+                }, {
+                    "name": "latinos4trump",
+                    "value": 813
+                }, {
+                    "name": "latinosfortrump",
+                    "value": 4936
+                }, {
+                    "name": "maga",
+                    "value": 236222
+                }, {
+                    "name": "makeamericagreat",
+                    "value": 878
+                }, {
+                    "name": "makeamericagreatagain",
+                    "value": 94674
+                }, {
+                    "name": "makeamericasafeagain",
+                    "value": 2888
+                }, {
+                    "name": "makeamericaworkagain",
+                    "value": 455
+                }, {
+                    "name": "onlytrump",
+                    "value": 3817
+                }, {
+                    "name": "presienttrump",
+                    "value": 1
+                }, {
+                    "name": "rednationrising",
+                    "value": 35965
+                }, {
+                    "name": "trump16",
+                    "value": 2566
+                }, {
+                    "name": "trump2016",
+                    "value": 221675
+                }, {
+                    "name": "trumpcares",
+                    "value": 138
+                }, {
+                    "name": "trumpforpresident",
+                    "value": 2769
+                }, {
+                    "name": "trumpiswithyou",
+                    "value": 1128
+                }, {
+                    "name": "trumppence2016",
+                    "value": 5039
+                }, {
+                    "name": "trumpstrong",
+                    "value": 1615
+                }, {
+                    "name": "trumptrain",
+                    "value": 118679
+                }, {
+                    "name": "veteransfortrump",
+                    "value": 550
+                }, {
+                    "name": "vets4trump",
+                    "value": 648
+                }, {
+                    "name": "votegop",
+                    "value": 1005
+                }, {
+                    "name": "votetrump",
+                    "value": 43403
+                }, {
+                    "name": "votetrump2016",
+                    "value": 11874
+                }, {
+                    "name": "votetrumppence2016",
+                    "value": 231
+                }, {
+                    "name": "woman4trump",
+                    "value": 2311
+                }, {
+                    "name": "women4trump",
+                    "value": 7935
+                }, {
+                    "name": "womenfortrump",
+                    "value": 6806
+                }, {
+                    "name": "antitrump",
+                    "value": 2482
+                }, {
+                    "name": "anyonebuttrump",
+                    "value": 626
+                }, {
+                    "name": "boycotttrump",
+                    "value": 712
+                }, {
+                    "name": "chickentrump",
+                    "value": 3468
+                }, {
+                    "name": "clowntrain",
+                    "value": 293
+                }, {
+                    "name": "crookeddonald",
+                    "value": 678
+                }, {
+                    "name": "crookeddrumpf",
+                    "value": 122
+                }, {
+                    "name": "crookedtrump",
+                    "value": 607
+                }, {
+                    "name": "crybabytrump",
+                    "value": 79
+                }, {
+                    "name": "defeattrump",
+                    "value": 151
+                }, {
+                    "name": "dirtydonald",
+                    "value": 1255
+                }, {
+                    "name": "donthecon",
+                    "value": 4267
+                }, {
+                    "name": "drumpf",
+                    "value": 10445
+                }, {
+                    "name": "dumbdonald",
+                    "value": 467
+                }, {
+                    "name": "dumpthetrump",
+                    "value": 769
+                }, {
+                    "name": "dumptrump",
+                    "value": 20371
+                }, {
+                    "name": "freethedelegates",
+                    "value": 1029
+                }, {
+                    "name": "lgbthatestrumpparty",
+                    "value": 18
+                }, {
+                    "name": "loserdonald",
+                    "value": 673
+                }, {
+                    "name": "losertrump",
+                    "value": 341
+                }, {
+                    "name": "lovetrumpshate",
+                    "value": 7122
+                }, {
+                    "name": "lovetrumpshates",
+                    "value": 65
+                }, {
+                    "name": "lyindonald",
+                    "value": 235
+                }, {
+                    "name": "lyingdonald",
+                    "value": 190
+                }, {
+                    "name": "lyingtrump",
+                    "value": 465
+                }, {
+                    "name": "lyintrump",
+                    "value": 492
+                }, {
+                    "name": "makedonalddrumpfagain",
+                    "value": 2804
+                }, {
+                    "name": "nevergop",
+                    "value": 530
+                }, {
+                    "name": "nevertrump",
+                    "value": 86762
+                }, {
+                    "name": "nevertrumppence",
+                    "value": 157
+                }, {
+                    "name": "nodonaldtrump",
+                    "value": 232
+                }, {
+                    "name": "notrump",
+                    "value": 1310
+                }, {
+                    "name": "notrumpanytime",
+                    "value": 111
+                }, {
+                    "name": "poordonald",
+                    "value": 59
+                }, {
+                    "name": "racisttrump",
+                    "value": 389
+                }, {
+                    "name": "releasethereturns",
+                    "value": 1342
+                }, {
+                    "name": "releaseyourtaxes",
+                    "value": 385
+                }, {
+                    "name": "ripgop",
+                    "value": 607
+                }, {
+                    "name": "showusyourtaxes",
+                    "value": 96
+                }, {
+                    "name": "sleazydonald",
+                    "value": 1560
+                }, {
+                    "name": "stoptrump",
+                    "value": 2889
+                }, {
+                    "name": "stupidtrump",
+                    "value": 80
+                }, {
+                    "name": "traitortrump",
+                    "value": 643
+                }, {
+                    "name": "treasonoustrump",
+                    "value": 485
+                }, {
+                    "name": "trump20never",
+                    "value": 844
+                }, {
+                    "name": "trumplies",
+                    "value": 1616
+                }, {
+                    "name": "trumpliesmatter",
+                    "value": 179
+                }, {
+                    "name": "trumpsopoor",
+                    "value": 987
+                }, {
+                    "name": "trumpthefraud",
+                    "value": 106
+                }, {
+                    "name": "trumptrainwreck",
+                    "value": 478
+                }, {
+                    "name": "trumptreason",
+                    "value": 772
+                }, {
+                    "name": "unfittrump",
+                    "value": 62
+                }, {
+                    "name": "weakdonald",
+                    "value": 550
+                }, {
+                    "name": "wherertrumpstaxes",
+                    "value": 45
+                }, {
+                    "name": "wheresyourtaxes",
+                    "value": 409
+                }, {
+                    "name": "whinylittlebitch",
+                    "value": 1055
+                }, {
+                    "name": "womentrumpdonald",
+                    "value": 196
+                }, {
+                    "name": "bernwithher",
+                    "value": 26
+                }, {
+                    "name": "bluewave2016",
+                    "value": 1260
+                }, {
+                    "name": "clintonkaine2016",
+                    "value": 1435
+                }, {
+                    "name": "estoyconella",
+                    "value": 526
+                }, {
+                    "name": "herstory",
+                    "value": 2518
+                }, {
+                    "name": "heswithher",
+                    "value": 413
+                }, {
+                    "name": "hillafornia",
+                    "value": 13
+                }, {
+                    "name": "hillary2016",
+                    "value": 31148
+                }, {
+                    "name": "hillaryforamerica",
+                    "value": 481
+                }, {
+                    "name": "hillaryforpr",
+                    "value": 47
+                }, {
+                    "name": "hillaryforpresident",
+                    "value": 505
+                }, {
+                    "name": "hillarysopresidential",
+                    "value": 24
+                }, {
+                    "name": "hillarysoqualified",
+                    "value": 3809
+                }, {
+                    "name": "hillarystrong",
+                    "value": 1091
+                }, {
+                    "name": "hillstorm2016",
+                    "value": 93
+                }, {
+                    "name": "hillyes",
+                    "value": 6846
+                }, {
+                    "name": "hrc2016",
+                    "value": 412
+                }, {
+                    "name": "hrcisournominee",
+                    "value": 359
+                }, {
+                    "name": "iamwithher",
+                    "value": 1413
+                }, {
+                    "name": "imwither",
+                    "value": 2274
+                }, {
+                    "name": "imwithher",
+                    "value": 138723
+                }, {
+                    "name": "imwithher2016",
+                    "value": 1827
+                }, {
+                    "name": "imwhithhillary",
+                    "value": 1
+                }, {
+                    "name": "imwiththem",
+                    "value": 992
+                }, {
+                    "name": "itrusther",
+                    "value": 102
+                }, {
+                    "name": "itrusthillary",
+                    "value": 1088
+                }, {
+                    "name": "madamepresident",
+                    "value": 483
+                }, {
+                    "name": "madampresident",
+                    "value": 1138
+                }, {
+                    "name": "momsdemandhillary",
+                    "value": 240
+                }, {
+                    "name": "ohhillyes",
+                    "value": 1536
+                }, {
+                    "name": "readyforhillary",
+                    "value": 966
+                }, {
+                    "name": "republicans4hillary",
+                    "value": 127
+                }, {
+                    "name": "republicansforhillary",
+                    "value": 1092
+                }, {
+                    "name": "sheswithus",
+                    "value": 3612
+                }, {
+                    "name": "standwithmadampotus",
+                    "value": 345
+                }, {
+                    "name": "strongertogether",
+                    "value": 22285
+                }, {
+                    "name": "uniteblue",
+                    "value": 70719
+                }, {
+                    "name": "vote4hillary",
+                    "value": 1501
+                }, {
+                    "name": "voteblue",
+                    "value": 7251
+                }, {
+                    "name": "voteblue2016",
+                    "value": 734
+                }, {
+                    "name": "votehillary",
+                    "value": 4595
+                }, {
+                    "name": "welovehillary",
+                    "value": 172
+                }, {
+                    "name": "yeswekaine",
+                    "value": 127
+                }, {
+                    "name": "clintoncorruption",
+                    "value": 1255
+                }, {
+                    "name": "clintoncrime",
+                    "value": 189
+                }, {
+                    "name": "clintoncrimefamily",
+                    "value": 1926
+                }, {
+                    "name": "clintoncrimefoundation",
+                    "value": 753
+                }, {
+                    "name": "corrupthillary",
+                    "value": 1961
+                }, {
+                    "name": "criminalhillary",
+                    "value": 263
+                }, {
+                    "name": "crookedclinton",
+                    "value": 1070
+                }, {
+                    "name": "crookedclintons",
+                    "value": 384
+                }, {
+                    "name": "crookedhilary",
+                    "value": 613
+                }, {
+                    "name": "crookedhiliary",
+                    "value": 297
+                }, {
+                    "name": "crookedhillary",
+                    "value": 53952
+                }, {
+                    "name": "crookedhillaryclinton",
+                    "value": 191
+                }, {
+                    "name": "deletehillary",
+                    "value": 146
+                }, {
+                    "name": "dropouthillary",
+                    "value": 13876
+                }, {
+                    "name": "fbimwithher",
+                    "value": 1005
+                }, {
+                    "name": "handcuffhillary",
+                    "value": 872
+                }, {
+                    "name": "heartlesshillary",
+                    "value": 415
+                }, {
+                    "name": "hillary2jail",
+                    "value": 162
+                }, {
+                    "name": "hillary4jail",
+                    "value": 200
+                }, {
+                    "name": "hillary4prison",
+                    "value": 4088
+                }, {
+                    "name": "hillary4prison2016",
+                    "value": 529
+                }, {
+                    "name": "hillaryforprison",
+                    "value": 16689
+                }, {
+                    "name": "hillaryforprison2016",
+                    "value": 5007
+                }, {
+                    "name": "hillaryliedpeopledied",
+                    "value": 151
+                }, {
+                    "name": "hillarylies",
+                    "value": 1471
+                }, {
+                    "name": "hillaryliesmatter",
+                    "value": 1911
+                }, {
+                    "name": "hillarylosttome",
+                    "value": 1
+                }, {
+                    "name": "hillaryrottenclinton",
+                    "value": 1419
+                }, {
+                    "name": "hillarysolympics",
+                    "value": 1017
+                }, {
+                    "name": "hillno",
+                    "value": 4610
+                }, {
+                    "name": "hypocritehillary",
+                    "value": 257
+                }, {
+                    "name": "imnotwithher",
+                    "value": 1284
+                }, {
+                    "name": "indicthillary",
+                    "value": 3014
+                }, {
+                    "name": "iwillneverstandwithher",
+                    "value": 335
+                }, {
+                    "name": "killary",
+                    "value": 14542
+                }, {
+                    "name": "lockherup",
+                    "value": 13918
+                }, {
+                    "name": "lyingcrookedhillary",
+                    "value": 470
+                }, {
+                    "name": "lyinghillary",
+                    "value": 908
+                }, {
+                    "name": "lyinhillary",
+                    "value": 146
+                }, {
+                    "name": "moretrustedthanhillary",
+                    "value": 1211
+                }, {
+                    "name": "neverclinton",
+                    "value": 1191
+                }, {
+                    "name": "nevereverhillary",
+                    "value": 515
+                }, {
+                    "name": "neverhillary",
+                    "value": 72852
+                }, {
+                    "name": "neverhilllary",
+                    "value": 72
+                }, {
+                    "name": "nohillary2016",
+                    "value": 919
+                }, {
+                    "name": "nomoreclintons",
+                    "value": 599
+                }, {
+                    "name": "notwithher",
+                    "value": 1006
+                }, {
+                    "name": "ohhillno",
+                    "value": 5946
+                }, {
+                    "name": "releasethetranscripts",
+                    "value": 3548
+                }, {
+                    "name": "riskyhillary",
+                    "value": 155
+                }, {
+                    "name": "shelies",
+                    "value": 1504
+                }, {
+                    "name": "sickhillary",
+                    "value": 3710
+                }, {
+                    "name": "stophillary",
+                    "value": 4411
+                }, {
+                    "name": "stophillary2016",
+                    "value": 1100
+                }, {
+                    "name": "theclintoncontamination",
+                    "value": 51
+                }, {
+                    "name": "wehatehillary",
+                    "value": 528
+                }, {
+                    "name": "whatmakeshillaryshortcircuit",
+                    "value": 1460
+                }
+            ]
+        };
+    }
     //matchedTweetsChart.AddDataPoints
 })(App || (App = {}));
 //# sourceMappingURL=main.js.map

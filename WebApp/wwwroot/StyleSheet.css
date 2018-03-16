@@ -370,3 +370,23 @@ button, input {
 svg {
     text-shadow: none;
 }
+
+rect.background {
+    fill: none;
+    pointer-events: all;
+}
+
+
+
+.axis path,
+.axis line {
+    fill: none;
+    stroke: #fff;
+    stroke-width: .5px;
+}
+
+#Insights {
+overflow-x: hidden;
+overflow-y: auto;
+
+}
