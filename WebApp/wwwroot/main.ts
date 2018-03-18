@@ -121,6 +121,12 @@ module App {
             API.Decompress(input.value);
         });
 
+        //FilesController/decompressFiles
+        document.getElementById("startStream").addEventListener("click", () => {
+            console.log("click", input.value);
+            API.StartStream(input.value);
+        });
+
         function addEntry($element, text) {
 
         }
@@ -336,9 +342,12 @@ module App {
         export function GetFiles(path: string) {
             console.log(GetUrl("FilesController/getFiles"));
             Log.logToDiv("manageErrorMessage", "Retrieving data...", "info");
-            document.getElementById("totalFilesFound").innerHTML = "-";
             document.getElementById("standardFilesFound").innerHTML = "-";
             document.getElementById("compressedFilesFound").innerHTML = "-";
+            document.getElementById("filteredFilesFound").innerHTML = "-";
+            document.getElementById("APIFilesFound").innerHTML = "-";
+            document.getElementById("StatsFilesFound").innerHTML = "-";
+            document.getElementById("totalFilesFound").innerHTML = "-";
             document.getElementById("selectedSource").innerHTML = "-";
 
             $.ajax({
@@ -353,9 +362,12 @@ module App {
             }).done(function (data) {
                 data = JSON.parse(data);
                 console.log(data);
-                document.getElementById("totalFilesFound").innerHTML = data.Standard + data.Compressed;
+                document.getElementById("totalFilesFound").innerHTML = data.Standard + data.Compressed + data.Filtered + data.API + data.Stats;
                 document.getElementById("standardFilesFound").innerHTML = data.Standard;
                 document.getElementById("compressedFilesFound").innerHTML = data.Compressed;
+                document.getElementById("filteredFilesFound").innerHTML = data.Filtered;
+                document.getElementById("APIFilesFound").innerHTML = data.API;
+                document.getElementById("StatsFilesFound").innerHTML = data.Stats;
                 document.getElementById("selectedSource").innerHTML = (<HTMLInputElement>document.getElementById("manageInput")).value;
                 Log.logToDiv("manageErrorMessage", "Finished scaning directory for files.", "info");
             });
@@ -395,6 +407,24 @@ module App {
                 Log.logToDiv("decompressErrorMessage", "Finished decompressing.", "info");
                 //Log.clearDiv("decompressErrorMessage");
             });
+        }
+
+        export function StartStream(path: string) {
+            //Log.logToDiv("decompressErrorMessage", "Decompressing files...", "info");
+
+            //$.ajax({
+            //    url: GetUrl("FilesController/decompressFiles"),
+            //    type: "GET",
+            //    dataType: "text",
+            //    data: path,
+            //    processData: false,
+            //    contentType: "text/xml; charset=\"utf-8\"",
+            //    success: () => { },
+            //    error: () => { Log.logToDiv("decompressErrorMessage", "Error occured while trying to retrieve directories from the selected location.", "error") }
+            //}).done(function (data) {
+            //    Log.logToDiv("decompressErrorMessage", "Finished decompressing.", "info");
+            //    //Log.clearDiv("decompressErrorMessage");
+            //});
         }
 
         function GetUrl(url: string) {
@@ -719,7 +749,7 @@ module App {
         .attr("y1", "100%")
         .style("fill", "white");
 
-    var root : any = getJson();
+    var root: any = getJson();
     hierarchy.nodes(root);
     x.domain([1, root.value]).nice();
     down(root, 0);
@@ -851,7 +881,7 @@ module App {
     function getJson() {
         return {
             "name": "flare",
-            "children": [ {
+            "children": [{
                 "name": "alwaystrump",
                 "value": 13678
             }, {

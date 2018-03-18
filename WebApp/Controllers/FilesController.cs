@@ -19,15 +19,20 @@ namespace WebApp.Controllers
             var path = this.Request.Query.ElementAt(0).Key;
             var watch = System.Diagnostics.Stopwatch.StartNew();
 
-            var a = Directory.GetFiles(path, "*.json", SearchOption.AllDirectories);
-            var b = Directory.GetFiles(path, "*.bz2", SearchOption.AllDirectories);
+            var a = Directory.GetFiles(path, "*", SearchOption.AllDirectories);
+            //a.Where(item => item.ToLower().Contains(".json"));
+            //var b = Directory.GetFiles(path, "*.bz2", SearchOption.AllDirectories);
 
             Console.WriteLine(watch.ElapsedMilliseconds);
 
             Dictionary<string, int> files = new Dictionary<string, int>()
             {
-                { "Standard" , a.Count() },
-                { "Compressed" , b.Count() }
+                { "Standard" , a.Where(item => item.ToLower().Contains(".json")).Count() },
+                { "Compressed" , a.Where(item => item.ToLower().Contains(".bz2")).Count() },
+                { "Filtered" , a.Where(item => item.ToLower().Contains("matched")).Count() },
+                { "API" , a.Where(item => item.ToLower().Contains("API_")).Count() },
+                { "Stats" , a.Where(item => item.ToLower().Contains("stats")).Count() },
+                { "Total" , a.Count() }
             };
 
             JsonResult result = new JsonResult(files);
@@ -53,23 +58,34 @@ namespace WebApp.Controllers
             //return result;
         }
 
-
-        private static void RunStream()
+        [HttpGet("FilesController/startStream")]
+        private JsonResult StartStream()
         {
-            var t = new Thread(() =>
+            try
             {
-                var stream = Tweetinvi.Stream.CreateFilteredStream();
-                stream.AddTrack("bitcoin");
-                for (; ; )
+                var keyword = this.Request.Query.ElementAt(0).Key;
+                var path = this.Request.Query.ElementAt(1).Key;
+
+                var t = new Thread(() =>
                 {
-                    stream.MatchingTweetReceived += (sender, args) =>
+                    var stream = Tweetinvi.Stream.CreateFilteredStream();
+                    stream.AddTrack(keyword);
+                    for (; ; )
                     {
-                        Console.WriteLine("A tweet containing 'tweetinvi' has been found; the tweet is '" + args.Tweet + "'");
-                    };
-                    stream.StartStreamMatchingAllConditions();
-                }
-            });
-            t.Start();
+                        stream.MatchingTweetReceived += (sender, args) =>
+                        {
+                            System.IO.File.AppendAllText(path, sender + " " + args);
+                            Console.WriteLine("Tweet " + args.Tweet);
+                        };
+                        stream.StartStreamMatchingAllConditions();
+                    }
+                });
+                t.Start();
+                return new JsonResult("Started stream for keyword" + keyword + ". Saving to file at location " + path + ".");
+            }
+            catch (Exception e) {
+                return new JsonResult("Exceptions occured while attempting to open stream. Exception: " + e);
+            }
         }
 
 

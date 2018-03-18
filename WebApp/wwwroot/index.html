@@ -44,7 +44,7 @@
                 <button id="manageButton" style="color: #464646">Find</button>
                 <br />
                 <div id="manageErrorMessage"></div>
-                <br />               
+                <br />
             </div>
 
             <div class="flex-container">
@@ -54,9 +54,9 @@
                     <br />
                     <div>JSON files found:<div id="standardFilesFound" style="float:right; margin-right: 10px;">-</div></div>
                     <div>BZ2 files found:<div id="compressedFilesFound" style="float:right; margin-right: 10px;">-</div></div>
-                    <div>Filtered files found:<div id="totalFilesFound" style="float:right; margin-right: 10px;">-</div></div>
-                    <div>Twitter API files:<div id="totalFilesFound" style="float:right; margin-right: 10px;">-</div></div>
-                    <div>Stats files:<div id="totalFilesFound" style="float:right; margin-right: 10px;">-</div></div>
+                    <div>Filtered files found:<div id="filteredFilesFound" style="float:right; margin-right: 10px;">-</div></div>
+                    <div>Twitter API files:<div id="APIFilesFound" style="float:right; margin-right: 10px;">-</div></div>
+                    <div>Stats files:<div id="StatsFilesFound" style="float:right; margin-right: 10px;">-</div></div>
                     <div>Total files found:<div id="totalFilesFound" style="float:right; margin-right: 10px;">-</div></div>
                     <p></p>
                     <p></p>
@@ -80,6 +80,20 @@
                     </div>
                 </div>
             </div>
+
+
+            <div class="textConatiner entryContainer" style="max-height:350px">
+                <div class="textHeader">Search using Twitter API Stream</div>
+                <p>Add keyword</p>
+                <input class="entryInput" id="searchTwitter" type="text" />
+                <br />
+                <p>Enter save location</p>
+                <input class="entryInput" id="searchTwitterSave" type="text" />
+                <br />
+                <button id="searchButton"> Begin Searching</button>
+
+            </div>
+
             <!--<div style="color: #f53b3b">No files found.</div>-->
         </div>
 
@@ -128,22 +142,6 @@
                 <br />
                 <div>Enter directory path</div>
                 <input  class="entryInput" id="searchPath" type="text" />
-                <br />
-                <button id="searchButton"> Begin Searching</button>
-
-            </div>
-
-            <div class="textConatiner entryContainer" style="max-height:350px">
-                <div class="textHeader">Search using Twitter API</div>
-                <br />
-                <div>Every 1 min</div>
-                <div>Get 1000 new matching tweets</div>
-                <div>from date 10/06/2015 12:14:10</div>
-                <div>To date - </div>
-                <div>using increments of 1min</div>
-                <div>and increase timestamp by 1min</div>
-                <div>Enter path to save</div>
-                <input  class="entryInput" id="searchTwitter" type="text" />
                 <br />
                 <button id="searchButton"> Begin Searching</button>
 

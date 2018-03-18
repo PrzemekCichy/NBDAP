@@ -95,6 +95,11 @@ var App;
             console.log("click", input.value);
             API.Decompress(input.value);
         });
+        //FilesController/decompressFiles
+        document.getElementById("startStream").addEventListener("click", function () {
+            console.log("click", input.value);
+            API.StartStream(input.value);
+        });
         function addEntry($element, text) {
         }
     })(Manage || (Manage = {}));
@@ -289,9 +294,12 @@ var App;
         function GetFiles(path) {
             console.log(GetUrl("FilesController/getFiles"));
             Log.logToDiv("manageErrorMessage", "Retrieving data...", "info");
-            document.getElementById("totalFilesFound").innerHTML = "-";
             document.getElementById("standardFilesFound").innerHTML = "-";
             document.getElementById("compressedFilesFound").innerHTML = "-";
+            document.getElementById("filteredFilesFound").innerHTML = "-";
+            document.getElementById("APIFilesFound").innerHTML = "-";
+            document.getElementById("StatsFilesFound").innerHTML = "-";
+            document.getElementById("totalFilesFound").innerHTML = "-";
             document.getElementById("selectedSource").innerHTML = "-";
             $.ajax({
                 url: GetUrl("FilesController/getFiles"),
@@ -305,9 +313,12 @@ var App;
             }).done(function (data) {
                 data = JSON.parse(data);
                 console.log(data);
-                document.getElementById("totalFilesFound").innerHTML = data.Standard + data.Compressed;
+                document.getElementById("totalFilesFound").innerHTML = data.Standard + data.Compressed + data.Filtered + data.API + data.Stats;
                 document.getElementById("standardFilesFound").innerHTML = data.Standard;
                 document.getElementById("compressedFilesFound").innerHTML = data.Compressed;
+                document.getElementById("filteredFilesFound").innerHTML = data.Filtered;
+                document.getElementById("APIFilesFound").innerHTML = data.API;
+                document.getElementById("StatsFilesFound").innerHTML = data.Stats;
                 document.getElementById("selectedSource").innerHTML = document.getElementById("manageInput").value;
                 Log.logToDiv("manageErrorMessage", "Finished scaning directory for files.", "info");
             });
@@ -347,6 +358,23 @@ var App;
             });
         }
         API.Search = Search;
+        function StartStream(path) {
+            //Log.logToDiv("decompressErrorMessage", "Decompressing files...", "info");
+            //$.ajax({
+            //    url: GetUrl("FilesController/decompressFiles"),
+            //    type: "GET",
+            //    dataType: "text",
+            //    data: path,
+            //    processData: false,
+            //    contentType: "text/xml; charset=\"utf-8\"",
+            //    success: () => { },
+            //    error: () => { Log.logToDiv("decompressErrorMessage", "Error occured while trying to retrieve directories from the selected location.", "error") }
+            //}).done(function (data) {
+            //    Log.logToDiv("decompressErrorMessage", "Finished decompressing.", "info");
+            //    //Log.clearDiv("decompressErrorMessage");
+            //});
+        }
+        API.StartStream = StartStream;
         function GetUrl(url) {
             return window.location.href + url;
         }
