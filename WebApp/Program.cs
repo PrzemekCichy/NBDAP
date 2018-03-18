@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
@@ -17,14 +18,18 @@ namespace WebApp
     {
         public static void Main(string[] args)
         {
+
+
+
             /*
              * "1",
              *   "1", 
              *   "2766150869-1", 
              *   "1"
              */
-            //var creditentials = null;// Auth.SetApplicationOnlyCredentials(/*ENtet Creditentials here*/);
-            
+            var creditentials = Auth.SetUserCredentials("1", "1",
+                "1-1", "1");
+
             //var user = Tweetinvi.User.GetAuthenticatedUser(creditentials);
             //Console.WriteLine(user);
             //var timeline = Timeline.GetUserTimeline(user, 1);
@@ -35,14 +40,16 @@ namespace WebApp
             //    //GeoCode = new GeoCode(-122.398720, 37.781157, 1, DistanceMeasure.Miles),
             //    Lang = LanguageFilter.English,
             //    SearchType = SearchResultType.Recent,
-            //    MaximumNumberOfResults = 0,
+            //    MaximumNumberOfResults = 1000,
             //    //Until = new DateTime(2015, 06, 02,),
             //};
 
             //var tweets = Search.SearchTweets(searchParameter);
+                       
 
-            BuildWebHost(args).Run();
+                BuildWebHost(args).Run();
         }
+
 
         public static IWebHost BuildWebHost(string[] args) =>
             WebHost.CreateDefaultBuilder(args)

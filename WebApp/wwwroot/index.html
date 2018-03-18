@@ -136,12 +136,12 @@
             <div class="textConatiner entryContainer" style="max-height:350px">
                 <div class="textHeader">Search using Twitter API</div>
                 <br />
-                <p>Every 1 min</p>
-                <p>Get 1000 new matching tweets</p>
-                <p>from date 10/06/2015 12:14:10</p>
-                <p>To date -</p>
-                <p>using increments of 1min</p>
-                <p>and increase timestamp by 1min</p>
+                <div>Every 1 min</div>
+                <div>Get 1000 new matching tweets</div>
+                <div>from date 10/06/2015 12:14:10</div>
+                <div>To date - </div>
+                <div>using increments of 1min</div>
+                <div>and increase timestamp by 1min</div>
                 <div>Enter path to save</div>
                 <input  class="entryInput" id="searchTwitter" type="text" />
                 <br />
@@ -191,14 +191,24 @@
 
 
         <div id="Insights" class="hiddenContent" style="width: 100%; text-shadow:none">
-            <div class="insightsContainer" style="float: left;width: 50%; text-shadow:none">Statistics</div>
+            <div class="textConatiner entryContainer" style="float: left;width: 48%; text-shadow:none; min-width: unset; max-width: unset">
+                <div class="textHeader" style="min-width: unset; max-width: unset; width: 100%">Statistics</div>
+                <div>Number of tweets searched: 123123123</div>
+                <div>Number of tweets matching the criteria: 123123</div>
+                <div>Average sentiment for Trump: 0.6</div>
+                <div>Average sentiment for Trump: 0.56</div>
+                <div>No of Pro-Trump Tweets: 123123</div>
+                <div>No of Anti-Trump Tweets: 1212</div>
+                <div>No of Pro-Clinton Tweets: 123123</div>
+                <div>No of Anti-Clinton Tweets: 12112</div>
+            </div>
             <div class="insightsContainer" style="width: 50%;float: right; text-shadow:none">
                 <div id="tweetsMatchedChart" style="width:100%; text-shadow:none"></div>
             </div>
-            <div id="InsightsCategories" class="insightsContainer" >
+            <div id="InsightsCategories" class="insightsContainer">
 
             </div>
-            <div id="KeywordsContainer" class="insightsContainer" >
+            <div id="KeywordsContainer" class="insightsContainer">
 
             </div>
         </div>
