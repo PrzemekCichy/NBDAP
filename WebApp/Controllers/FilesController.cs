@@ -7,6 +7,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace WebApp.Controllers
 {
@@ -58,33 +59,34 @@ namespace WebApp.Controllers
             //return result;
         }
 
-        [HttpGet("FilesController/startStream")]
-        private JsonResult StartStream()
+        public Thread t;
+
+        [HttpPost("FilesController/startStream")]
+        public JsonResult StartStream(string[] list)
         {
             try
             {
-                var keyword = this.Request.Query.ElementAt(0).Key;
-                var path = this.Request.Query.ElementAt(1).Key;
-
-                var t = new Thread(() =>
+                var keyword = list[0];
+                var path = list[1];                
+                this.t = new Thread(() =>
                 {
                     var stream = Tweetinvi.Stream.CreateFilteredStream();
-                    stream.AddTrack(keyword);
+                    if(keyword != "") stream.AddTrack(keyword);
                     for (; ; )
                     {
                         stream.MatchingTweetReceived += (sender, args) =>
                         {
-                            System.IO.File.AppendAllText(path, sender + " " + args);
-                            Console.WriteLine("Tweet " + args.Tweet);
+                            System.IO.File.AppendAllText(path, args.Json + "\n");
                         };
                         stream.StartStreamMatchingAllConditions();
                     }
                 });
                 t.Start();
-                return new JsonResult("Started stream for keyword" + keyword + ". Saving to file at location " + path + ".");
+                return new JsonResult(new { success = true, responseText = "Started stream for keyword" + keyword + ". Saving to file at location " + path + "." });
             }
-            catch (Exception e) {
-                return new JsonResult("Exceptions occured while attempting to open stream. Exception: " + e);
+            catch (Exception e)
+            {
+                return Json(new { success = false, responseText = "Exceptions occured while attempting to open stream." });
             }
         }
 

@@ -26,6 +26,8 @@ module App {
 
         var active = false;
 
+        var viewPortHeight = document.body.clientHeight - 54 * 2;
+
         var setUpListeners = (element: Element, callback: Function) => {
             //selectedButton
 
@@ -43,7 +45,7 @@ module App {
 
                     $active.classList.remove("selectedButton");
                     $active = $target;
-                    $active_content.style.top = -document.body.clientHeight + "px";
+                    $active_content.style.top = -viewPortHeight + "px";
                     $active_content.classList.add("hiddenContent");
                     $active_content.style.transform = "translateY(0px)";
                     $active_content = document.getElementById((() => {
@@ -69,9 +71,9 @@ module App {
         setUpListeners($topNav, (id: string) => {
             console.log(id, $active_content);
             $active_content.style.position = "relative";
-            $active_content.style.top = -document.body.clientHeight + 50 + "px";
+            $active_content.style.top = -document.body.clientHeight + 54 + "px";
             $active_content.style.transitionDuration = " 0.5s";
-            $active_content.style.transform = "translateY(" + document.body.clientHeight + "px)";
+            $active_content.style.transform = "translateY(" + viewPortHeight + "px)";
             if (id == "Home") {
                 console.log("home clicked");
                 $topNav.style.transform = "translateY(0px)";
@@ -123,8 +125,10 @@ module App {
 
         //FilesController/decompressFiles
         document.getElementById("startStream").addEventListener("click", () => {
-            console.log("click", input.value);
-            API.StartStream(input.value);
+
+
+            API.StartStream((<HTMLInputElement>document.getElementById("searchTwitter")).value,
+                (<HTMLInputElement>document.getElementById("searchTwitterSave")).value);
         });
 
         function addEntry($element, text) {
@@ -384,7 +388,7 @@ module App {
                 processData: false,
                 contentType: "text/xml; charset=\"utf-8\"",
                 success: () => { },
-                error: () => { Log.logToDiv("decompressErrorMessage", "Error occured while trying to retrieve directories from the selected location.", "error") }
+                error: () => { Log.logToDiv("decompressErrorMessage", "Error occured while trying to decompress", "error") }
             }).done(function (data) {
                 Log.logToDiv("decompressErrorMessage", "Finished decompressing.", "info");
                 //Log.clearDiv("decompressErrorMessage");
@@ -409,20 +413,34 @@ module App {
             });
         }
 
-        export function StartStream(path: string) {
-            //Log.logToDiv("decompressErrorMessage", "Decompressing files...", "info");
+        export function StartStream(keyword: string, path: string) {
+            Log.logToDiv("streamErrorMessage", "Starting stream...", "info");
+            $.post(GetUrl("FilesController/startStream"), { "": [keyword, path] }, function (data, status) {
+                debugger;
+                data.success == false && Log.logToDiv("streamErrorMessage", data.responseText, "error");
+                data.success == true && Log.logToDiv("streamErrorMessage", data.responseText, "info");
+                console.log("Some callback", data, status)
+            }).done(function (data) {
+                console.log("Done", data);
+            }).fail(function (data) {
+                console.log("Error", data);
+            });
+
+
+
 
             //$.ajax({
-            //    url: GetUrl("FilesController/decompressFiles"),
-            //    type: "GET",
-            //    dataType: "text",
-            //    data: path,
+            //    url: GetUrl("FilesController/startStream"),
+            //    type: "POST",
+            //    dataType: "json",
+            //    data: JSON.stringify({ list: [keyword, path] }),
             //    processData: false,
-            //    contentType: "text/xml; charset=\"utf-8\"",
+            //    contentType: "application/json; charset=utf-8", 
             //    success: () => { },
-            //    error: () => { Log.logToDiv("decompressErrorMessage", "Error occured while trying to retrieve directories from the selected location.", "error") }
+            //    error: () => {  }
             //}).done(function (data) {
-            //    Log.logToDiv("decompressErrorMessage", "Finished decompressing.", "info");
+            //    data.success == "False" && Log.logToDiv("streamErrorMessage", data.responseText, "error");
+            //    data.success == "True" && Log.logToDiv("streamErrorMessage", "Steam started.", "info");
             //    //Log.clearDiv("decompressErrorMessage");
             //});
         }

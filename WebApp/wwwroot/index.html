@@ -6,7 +6,7 @@
     <script src="http://code.jquery.com/jquery-3.3.1.min.js"></script>
     <script src="http://mbostock.github.io/d3/talk/20111116/d3/d3.js"></script>
     <script src="http://mbostock.github.io/d3/talk/20111116/d3/d3.layout.js"></script>
-    
+
 </head>
 <body>
     <topNav>
@@ -40,93 +40,88 @@
             <div class="textConatiner prepareContainer">
                 <div class="textHeader">Search directory for twitter files</div>
                 <p>Enter Directory Name</p>
-                <input class="entryInput" id="manageInput" type="text" />
-                <button id="manageButton" style="color: #464646">Find</button>
+                <input placeholder="Enter directory path..." class="entryInput" id="manageInput" type="text" />
+                <button class="entryButton" id="manageButton" style="color: #464646"> Find</button>
                 <br />
                 <div id="manageErrorMessage"></div>
                 <br />
             </div>
 
-            <div class="flex-container">
-
-                <div class="textConatiner prepareContainer" style="max-width: 800px;">
-                    <div class="textHeader">Files</div>
+            <div class="textConatiner prepareContainer" style="max-width: 800px;">
+                <div class="textHeader">Files</div>
+                <br />
+                <div>JSON files found:<div id="standardFilesFound" style="float:right; margin-right: 10px;">-</div></div>
+                <div>BZ2 files found:<div id="compressedFilesFound" style="float:right; margin-right: 10px;">-</div></div>
+                <div>Filtered files found:<div id="filteredFilesFound" style="float:right; margin-right: 10px;">-</div></div>
+                <div>Twitter API files:<div id="APIFilesFound" style="float:right; margin-right: 10px;">-</div></div>
+                <div>Stats files:<div id="StatsFilesFound" style="float:right; margin-right: 10px;">-</div></div>
+                <div>Total files found:<div id="totalFilesFound" style="float:right; margin-right: 10px;">-</div></div>
+                <p></p>
+                <p></p>
+                <div id="standardFiles" class="entries"></div>
+            </div>
+            <div class="textConatiner prepareContainer">
+                <div class="textHeader">Selected Files</div>
+                <div style="min-height: 100%;">
+                    <p>Decompress matched files</p>
+                    <div>Selected source: <div id="selectedSource"></div></div>
                     <br />
-                    <div>JSON files found:<div id="standardFilesFound" style="float:right; margin-right: 10px;">-</div></div>
-                    <div>BZ2 files found:<div id="compressedFilesFound" style="float:right; margin-right: 10px;">-</div></div>
-                    <div>Filtered files found:<div id="filteredFilesFound" style="float:right; margin-right: 10px;">-</div></div>
-                    <div>Twitter API files:<div id="APIFilesFound" style="float:right; margin-right: 10px;">-</div></div>
-                    <div>Stats files:<div id="StatsFilesFound" style="float:right; margin-right: 10px;">-</div></div>
-                    <div>Total files found:<div id="totalFilesFound" style="float:right; margin-right: 10px;">-</div></div>
-                    <p></p>
-                    <p></p>
-                    <div id="standardFiles" class="entries"></div>
-                </div>
-
-                <div class="flex-container content" style="min-height: 100%; display: flex; align-items: center; justify-content: center;">
-
-                </div>
-
-                <div class="textConatiner prepareContainer">
-                    <div class="textHeader">Selected Files</div>
-                    <div style="min-height: 100%;">
-                        <p>Decompress matched files</p>
-                        <div>Selected source: <div id="selectedSource"></div></div>
-                        <br />
-                        <button id="decompressFiles" style="color: #464646;">Decompress</button>
-                        <br />
-                        <div id="decompressErrorMessage"></div>
-                        <br />
-                    </div>
+                    <button id="decompressFiles" style="color: #464646;">Decompress</button>
+                    <br />
+                    <div id="decompressErrorMessage"></div>
+                    <br />
                 </div>
             </div>
 
-
-            <div class="textConatiner entryContainer" style="max-height:350px">
+            <div class="textConatiner entryContainer">
                 <div class="textHeader">Search using Twitter API Stream</div>
                 <p>Add keyword</p>
-                <input class="entryInput" id="searchTwitter" type="text" />
+                <input class="entryInput" placeholder="Add a specific keyword for stream..." id="searchTwitter" type="text" />
                 <br />
                 <p>Enter save location</p>
-                <input class="entryInput" id="searchTwitterSave" type="text" />
+                <input class="entryInput" placeholder="Enter directory path..." id="searchTwitterSave" type="text" />
                 <br />
-                <button id="searchButton"> Begin Searching</button>
+                <button id="startStream"> Start Stream</button>
+                <br />
+                <div id="streamErrorMessage"></div>
 
             </div>
-
             <!--<div style="color: #f53b3b">No files found.</div>-->
         </div>
-
         <div id="Prepare" class="flex-container hiddenContent">
             <div class="textConatiner prepareContainer">
                 <div class="textHeader">Search for Text</div>
-                <br />
-                <input class="entryInput" type="text" /><button class="entryButton"> Add</button>
+                <input class="entryInput" type="text" placeholder="Enter text you want to search for..." /><button class="entryButton"> Add</button>
                 <div class="errorMessage"></div>
                 <div class="entries"></div>
             </div>
             <div class="textConatiner prepareContainer">
                 <div class="textHeader">Search for Hashtags</div>
-                <br />
-                <input class="entryInput" type="text" /><button class="entryButton"> Add</button>
+                <input class="entryInput" type="text" placeholder="Enter hashtag you want to search for..." /><button class="entryButton"> Add</button>
                 <div class="errorMessage"></div>
                 <div class="entries"></div>
             </div>
             <div class="textConatiner prepareContainer">
                 <div class="textHeader">Search for Mentions</div>
-                <br />
-                <input class="entryInput" type="text" /><button class="entryButton"> Add</button>
+                <input class="entryInput" type="text" placeholder="Enter mention you want to search for..." /><button class="entryButton"> Add</button>
                 <div class="errorMessage"></div>
                 <div class="entries"></div>
             </div>
             <div class="textConatiner prepareContainer">
                 <div class="textHeader">Search for User</div>
-                <br />
-                <input class="entryInput" type="text" /><button class="entryButton"> Add</button>
+                <input class="entryInput" type="text" placeholder="Enter user you want to search for..." /><button class="entryButton"> Add</button>
                 <div class="errorMessage"></div>
                 <div class="entries"></div>
             </div>
-            <div class="textConatiner prepareContainer" style="max-height:350px">
+
+            <div class="textConatiner entryContainer" style="margin: auto; margin-left: inherit;">
+                <div class="textHeader">Begin Search</div>
+                <br />
+                <div>Enter directory path</div>
+                <input class="entryInput" id="searchPath" type="text" />
+                <br />
+                <button id="searchButton"> Begin Searching</button>
+                <hr />
                 <p>Import configuration</p>
                 <div class="file-field input-field"><input type="file"></div>
                 <button id="importCategory" style="color: #464646">Import</button>
@@ -135,20 +130,8 @@
                 <button id="exportPrepareConfig" style="color: #464646">Export Config</button>
                 <br />
                 <div id="categoryErrorMessage"></div>
-
             </div>
-            <div class="textConatiner entryContainer" style="max-height:350px">
-                <div class="textHeader">Begin Search</div>
-                <br />
-                <div>Enter directory path</div>
-                <input  class="entryInput" id="searchPath" type="text" />
-                <br />
-                <button id="searchButton"> Begin Searching</button>
-
-            </div>
-
         </div>
-
         <div id="Model" class="flex-container hiddenContent">
             <div id="defaultCategoryContainer" class="categoryContainer hiddenContent">
                 <div class="textConatiner entryContainer">
@@ -166,26 +149,21 @@
                 </div>
                 <p>Remove Category <i class="far fa-times-circle"></i></p>
             </div>
-
-            <div class="textConatiner categoryContainer" style="max-height:350px">
-                <br />
-                <div>Enter category name</div>
-                <input id="inputCategoryText" style="color: #464646; width:90%" type="text" />
+            <div class="textConatiner categoryContainer">
+                <p>Enter category name</p>
+                <input id="inputCategoryText" class="entryInput" style="color: #464646; width:90%" type="text" />
                 <button id="addNewCategory" style="color: #464646">Add Category</button>
-                <p></p>
-                <div>Import configuration</div>
+                <hr />
+                <p>Import configuration</p>
                 <div class="file-field input-field"><input type="file"></div>
                 <button id="importCategory" style="color: #464646">Import</button>
-                <br />
+                <hr />
                 <p>Export Configuration</p>
                 <button id="exportConfig" style="color: #464646">Export Config</button>
-                <br />
+                <br /><br />
                 <div id="categoryErrorMessage"></div>
-
             </div>
         </div>
-
-
 
 
         <div id="Insights" class="hiddenContent" style="width: 100%; text-shadow:none">
@@ -204,16 +182,12 @@
                 <div id="tweetsMatchedChart" style="width:100%; text-shadow:none"></div>
             </div>
             <div id="InsightsCategories" class="insightsContainer">
-
             </div>
             <div id="KeywordsContainer" class="insightsContainer">
-
             </div>
         </div>
 
-
         <div id="Help" class="hiddenContent">
-
             <div class="textConatiner">
                 <div class="textHeader">Get started with Twitter Analysis Platform</div>
                 This app aims to help with the analysis of twitter data.
@@ -241,7 +215,6 @@
                 This sections allows to display reports generated by the model section.
             </div>
         </div>
-
         <div id="About" class="hiddenContent">
             <div class="textConatiner">
                 <div class="textHeader">About</div>
@@ -258,7 +231,6 @@
                 <p>Highcharts</p>
             </div>
         </div>
-
 
         <div id="Settings" class="hiddenContent">
             <div style="max-width:600px">
@@ -303,7 +275,7 @@
                 </div>
                 <br />
                 <div>Change Default Output Location</div>
-                <input style="color: #464646; min-width:300px" id="outputLocationInput" type="text" />
+                <input style="color: #464646; min-width:300px" id="outputLocationInput" type="text" class="entryInput" />
                 <button style="color: #464646">Find</button>
                 <br />
             </div>
@@ -311,7 +283,6 @@
         <div id="Logs" class="hiddenContent">
             Logs
         </div>
-
     </main>
     <!--   <aside>
         <h4>This is an aside section.</h4>
@@ -338,7 +309,6 @@
         </div>
     </bottomNav>
 </body>
-
 <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 <script src="https://code.highcharts.com/stock/highstock.js"></script>
 <script src="main.js"></script>

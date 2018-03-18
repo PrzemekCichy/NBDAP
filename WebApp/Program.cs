@@ -27,8 +27,8 @@ namespace WebApp
              *   "2766150869-1", 
              *   "1"
              */
-            var creditentials = Auth.SetUserCredentials("1", "1",
-                "1-1", "1");
+            var creditentials = Auth.SetUserCredentials("SrBsg6VyipOK4m1PnAedf3XiE", "GDveYXn2Wn34yYMUTBfkXw3km7AhmCvmRFzMhWUg4EscfOy6m5",
+                "2766150869-ZhDtzfgKjEvGF04yBDVG141XgWQ6AGjI41CqzRQ", "citfikPhk4iQ0Zdr654SRkpHM55TDk20EqbpE2ERWLeEO");
 
             //var user = Tweetinvi.User.GetAuthenticatedUser(creditentials);
             //Console.WriteLine(user);
