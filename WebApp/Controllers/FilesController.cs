@@ -60,28 +60,57 @@ namespace WebApp.Controllers
         }
 
         public Thread t;
-
+        public Tweetinvi.Streaming.IFilteredStream stream;
         [HttpPost("FilesController/startStream")]
         public JsonResult StartStream(string[] list)
         {
             try
             {
                 var keyword = list[0];
-                var path = list[1];                
+                var path = list[1];
+                //var iterations = 100000;
+                var p = path.Split(".txt");
+                path = p[0] + "_" + string.Format("{0:yyyy-MM-dd_hh-mm-ss-fff}", DateTime.Now) + ".txt";
+
+                object lock1 = new Object();
+
+                lock (lock1)
+                {
+                    if (!System.IO.File.Exists(path)) System.IO.File.Create(path);
+                }
+                try{
+                    if (t != null)
+                    {
+                        stream.StopStream();
+                        
+                    }
+                } catch (Exception e) {
+                    return new JsonResult(new { success = true, responseText = "Failed to abort old thread" });
+                }
                 this.t = new Thread(() =>
                 {
-                    var stream = Tweetinvi.Stream.CreateFilteredStream();
-                    if(keyword != "") stream.AddTrack(keyword);
-                    for (; ; )
-                    {
+                    this.stream = Tweetinvi.Stream.CreateFilteredStream();
+                    if (keyword != "") stream.AddTrack(keyword);
+
                         stream.MatchingTweetReceived += (sender, args) =>
                         {
+                            //do
+                            //{
+
+                            //iterations = 10000;
+                            
+                            //} while (iterations < 0);
+                            //iterations--;
                             System.IO.File.AppendAllText(path, args.Json + "\n");
+                            Console.WriteLine(args.Tweet);
                         };
                         stream.StartStreamMatchingAllConditions();
-                    }
+                    
                 });
-                t.Start();
+                lock (lock1)
+                {
+                    t.Start();
+                }
                 return new JsonResult(new { success = true, responseText = "Started stream for keyword" + keyword + ". Saving to file at location " + path + "." });
             }
             catch (Exception e)
