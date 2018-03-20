@@ -147,14 +147,75 @@ var App;
         }
         var input = document.getElementById("searchPath");
         document.getElementById("searchButton").addEventListener("click", function () {
-            API.Search(input.value);
+            API.Search(input.value, Tags);
         });
+        document.getElementById("exportPrepareConfig").addEventListener("click", function () {
+            Export();
+        });
+        function Export() {
+            var a = document.createElement("a");
+            var file = new Blob([JSON.stringify(Tags)], { type: "application/json" });
+            a.href = URL.createObjectURL(file);
+            a.download = "Prepare_Export.json";
+            a.click();
+        }
+        Prepare.Export = Export;
+        var errorMessage = document.getElementById("prepareErrorMessage");
+        var fileInput = document.getElementById('importPrepare');
+        fileInput.addEventListener('change', function (e) {
+            var file = fileInput.files[0];
+            var textType = /json.*/;
+            try {
+                errorMessage.innerText = "Reading file";
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    Import(JSON.parse(reader.result));
+                    errorMessage.innerText = "";
+                };
+                reader.readAsText(file);
+            }
+            catch (ex) {
+                errorMessage.innerText = "File could not be loaded. Error: " + ex;
+            }
+        });
+        function Import(input) {
+            //Object.keys(input).forEach((categoryName, index) => {
+            //    console.log("input", input, "cat", categoryName, "i", index);
+            //    Categories[categoryName] = new Category(categoryName);
+            //    var $div = document.getElementById(categoryName + "_category");
+            //    Object.keys(input[categoryName]["Negative"]).forEach((tag, index1) => {
+            //        Categories[categoryName].AddEntry($div, tag, 1);
+            //    });
+            //    Object.keys(input[categoryName]["Positive"]).forEach((tag, index1) => {
+            //        Categories[categoryName].AddEntry($div, tag, 0);
+            //    });
+            //})
+        }
+        Prepare.Import = Import;
     })(Prepare || (Prepare = {}));
     var Model;
     (function (Model) {
         Model.Categories = {};
         var $container = document.getElementById("Model");
-        document.getElementById("exportConfig").addEventListener("click", Export);
+        document.getElementById("exportModelConfig").addEventListener("click", Export);
+        var errorMessage = document.getElementById("categoryErrorMessage");
+        var fileInput = document.getElementById('importModelConfig');
+        fileInput.addEventListener('change', function (e) {
+            var file = fileInput.files[0];
+            var textType = /json.*/;
+            try {
+                errorMessage.innerText = "Reading file";
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    Import(JSON.parse(reader.result));
+                    errorMessage.innerText = "";
+                };
+                reader.readAsText(file);
+            }
+            catch (ex) {
+                errorMessage.innerText = "File could not be loaded. Error: " + ex;
+            }
+        });
         var Category = /** @class */ (function () {
             function Category(name) {
                 var _this = this;
@@ -188,11 +249,7 @@ var App;
                         return;
                     }
                     $div.getElementsByClassName("errorMessage")[0].innerHTML = "";
-                    var $element = document.createElement("div");
-                    $element.innerHTML = input.value;
-                    console.log("input.value", input.value);
-                    $div.getElementsByClassName("entries")[0].appendChild($element);
-                    _this.Add(input.value, "Positive");
+                    _this.AddEntry($div, input.value, 0);
                     input.value = "";
                 });
                 $div.getElementsByClassName("entryButton")[1]
@@ -203,15 +260,17 @@ var App;
                         return;
                     }
                     $div.getElementsByClassName("errorMessage")[1].innerHTML = "";
-                    if (_this.Negative[input.value])
-                        return;
-                    var $element = document.createElement("div");
-                    $element.innerHTML = input.value;
-                    console.log("input.value", input.value);
-                    $div.getElementsByClassName("entries")[1].appendChild($element);
-                    _this.Add(input.value, "Negative");
+                    _this.AddEntry($div, input.value, 1);
                     input.value = "";
                 });
+            };
+            Category.prototype.AddEntry = function ($div, text, type) {
+                $div.getElementsByClassName("errorMessage")[type].innerHTML = "";
+                var $element = document.createElement("div");
+                $element.innerHTML = text;
+                console.log("input.value", text);
+                $div.getElementsByClassName("entries")[type].appendChild($element);
+                this.Add(text, type == 0 ? "Positive" : "Negative");
             };
             Category.prototype.removeDom = function (name) {
                 document.getElementById(name + "_category").remove();
@@ -242,8 +301,18 @@ var App;
             a.click();
         }
         Model.Export = Export;
-        function Import(category) {
-            Model.Categories = JSON.parse(category);
+        function Import(input) {
+            Object.keys(input).forEach(function (categoryName, index) {
+                console.log("input", input, "cat", categoryName, "i", index);
+                Model.Categories[categoryName] = new Category(categoryName);
+                var $div = document.getElementById(categoryName + "_category");
+                Object.keys(input[categoryName]["Negative"]).forEach(function (tag, index1) {
+                    Model.Categories[categoryName].AddEntry($div, tag, 1);
+                });
+                Object.keys(input[categoryName]["Positive"]).forEach(function (tag, index1) {
+                    Model.Categories[categoryName].AddEntry($div, tag, 0);
+                });
+            });
         }
         Model.Import = Import;
     })(Model || (Model = {}));
@@ -341,21 +410,31 @@ var App;
             });
         }
         API.Decompress = Decompress;
-        function Search(path) {
-            Log.logToDiv("decompressErrorMessage", "Decompressing files...", "info");
-            $.ajax({
-                url: GetUrl("SearchController/search"),
-                type: "GET",
-                dataType: "text",
-                data: path,
-                processData: false,
-                contentType: "text/xml; charset=\"utf-8\"",
-                success: function () { },
-                error: function () { Log.logToDiv("decompressErrorMessage", "Error occured while trying to retrieve directories from the selected location.", "error"); }
+        function Search(path, tags) {
+            Log.logToDiv("decompressErrorMessage", "Searching files...", "info");
+            $.post(GetUrl("SearchController/search"), { "": JSON.stringify([path, tags]) }, function (data, status) {
+                debugger;
+                data.success == false && Log.logToDiv("decompressErrorMessage", data.responseText, "error");
+                data.success == true && Log.logToDiv("decompressErrorMessage", data.responseText, "info");
+                console.log("Some callback", data, status);
             }).done(function (data) {
-                Log.logToDiv("decompressErrorMessage", "Finished decompressing.", "info");
-                //Log.clearDiv("decompressErrorMessage");
+                console.log("Done", data);
+            }).fail(function (data) {
+                console.log("Error", data);
             });
+            //$.ajax({
+            //    url: GetUrl("SearchController/search"),
+            //    type: "GET",
+            //    dataType: "text",
+            //    data: path,
+            //    processData: false,
+            //    contentType: "text/xml; charset=\"utf-8\"",
+            //    success: () => { },
+            //    error: () => { Log.logToDiv("decompressErrorMessage", "Error occured while trying to retrieve directories from the selected location.", "error") }
+            //}).done(function (data) {
+            //    Log.logToDiv("decompressErrorMessage", "Finished decompressing.", "info");
+            //    //Log.clearDiv("decompressErrorMessage");
+            //});
         }
         API.Search = Search;
         function StartStream(keyword, path) {
