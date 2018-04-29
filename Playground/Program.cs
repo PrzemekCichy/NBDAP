@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -12,20 +13,7 @@ namespace Playground
     {
         static void Main(string[] args)
         {
-            MergeSearchResults(@"F:\Test", "output");
 
-            //Generate stats
-
-            //Read file
-
-            //Deserialize tweets
-
-            //Count occurrences of search terms 
-            using (StreamReader stream = File.OpenText(@"F:\Test\output.txt"))
-            {
-                JsonSerializer se = new JsonSerializer();
-                object parsedData = se.Deserialize(stream, typeof(Object));
-            }
 
         }
 

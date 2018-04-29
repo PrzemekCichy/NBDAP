@@ -388,6 +388,18 @@ module App {
 
         }
 
+        document.getElementById("modelVaderButton").addEventListener("click", () => {
+            API.StartVader((<HTMLInputElement>document.getElementById("modelDirectoryInput")).value);
+        }); 
+           
+        document.getElementById("customScriptButton").addEventListener("click", () => {
+            API.StartPython((<HTMLInputElement>document.getElementById("modelDirectoryInput")).value);
+        });
+
+        document.getElementById("modelSimilarityButton").addEventListener("click", () => {
+            API.StartSimilarity((<HTMLInputElement>document.getElementById("modelDirectoryInput")).value);
+        });
+
     }
 
     module Settings {
@@ -430,6 +442,62 @@ module App {
 
     export module API {
         var location = window.location.href;
+
+        export function StartVader(path: string) {
+            Log.logToDiv("modelErrorMessage", "Starting VADER analysis...", "info");
+
+            $.ajax({
+                url: GetUrl("ModelController/StartVader"),
+                type: "GET",
+                dataType: "text",
+                data: path,
+                processData: false,
+                contentType: "text/xml; charset=\"utf-8\"",
+                success: () => { },
+                error: () => { Log.logToDiv("modelErrorMessage", "Error occured while trying to start VADER analysis", "error") }
+            }).done(function (data) {
+                Log.logToDiv("modelErrorMessage", "Finished running VADER analysis.", "info");
+                //Log.clearDiv("decompressErrorMessage");
+            });
+        }
+
+        export function StartSimilarity(path: string) {
+            Log.logToDiv("modelErrorMessage", "Starting Similarity analysis...", "info");
+
+            $.ajax({
+                url: GetUrl("ModelController/StartModeling"),
+                type: "GET",
+                dataType: "text",
+                data: path,
+                processData: false,
+                contentType: "text/xml; charset=\"utf-8\"",
+                success: () => { },
+                error: () => { Log.logToDiv("modelErrorMessage", "Error occured while running similarity analysis", "error") }
+            }).done(function (data) {
+                Log.logToDiv("modelErrorMessage", "Finished running similarity analysis.", "info");
+                //Log.clearDiv("decompressErrorMessage");
+            });
+        }
+
+        export function StartPython(path: string) {
+            Log.logToDiv("modelErrorMessage", "Starting python script...", "info");
+
+            $.ajax({
+                url: GetUrl("ModelController/StartPythonScript"),
+                type: "GET",
+                dataType: "text",
+                data: path,
+                processData: false,
+                contentType: "text/xml; charset=\"utf-8\"",
+                success: () => { },
+                error: () => { Log.logToDiv("modelErrorMessage", "Error running python script...", "error") }
+            }).done(function (data) {
+                Log.logToDiv("modelErrorMessage", "Finished running python script...", "info");
+                //Log.clearDiv("decompressErrorMessage");
+            });
+        }
+
+
 
         export function GetFiles(path: string) {
             console.log(GetUrl("FilesController/getFiles"));

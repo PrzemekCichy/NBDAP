@@ -30,7 +30,7 @@ namespace WebApp.Controllers
             {
                 { "Standard" , a.Where(item => item.ToLower().Contains(".json")).Count() },
                 { "Compressed" , a.Where(item => item.ToLower().Contains(".bz2")).Count() },
-                { "Filtered" , a.Where(item => item.ToLower().Contains("matched")).Count() },
+                { "Filtered" , a.Where(item => item.ToLower().Contains("FILTERED_")).Count() },
                 { "API" , a.Where(item => item.ToLower().Contains("API_")).Count() },
                 { "Stats" , a.Where(item => item.ToLower().Contains("stats")).Count() },
                 { "Total" , a.Count() }
@@ -43,9 +43,7 @@ namespace WebApp.Controllers
 
         [HttpGet("FilesController/decompressFiles")]
         public async Task DecompressFiles()
-        {
-
-
+        {            
             var path = this.Request.Query.ElementAt(0).Key;
             var watch = System.Diagnostics.Stopwatch.StartNew();
             var t = Task.Run(() => Decompress.TransverseDirectory(path));
@@ -69,8 +67,7 @@ namespace WebApp.Controllers
                 var keyword = list[0];
                 var path = list[1];
                 //var iterations = 100000;
-                var p = path.Split(".txt");
-                path = p[0] + "_" + string.Format("{0:yyyy-MM-dd_hh-mm-ss-fff}", DateTime.Now) + ".txt";
+                path = path + "\\" + "API_" + keyword + "_" + string.Format("{0:yyyy-MM-dd_hh-mm-ss-fff}", DateTime.Now) + ".txt";
 
                 object lock1 = new Object();
 
