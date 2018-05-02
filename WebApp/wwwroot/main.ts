@@ -14,6 +14,7 @@ interface chartOptions {
     noOfChannels: number;
     isLogarithmic: boolean;
 }
+var insights;
 
 module App {
 
@@ -68,7 +69,7 @@ module App {
                 });
             }
         }
-        setUpListeners($topNav, (id: string) => {
+        setUpListeners($topNav, (id: string) =>  {
             console.log(id, $active_content);
             $active_content.style.position = "relative";
             $active_content.style.top = -document.body.clientHeight + 54 + "px";
@@ -137,7 +138,27 @@ module App {
     }
 
     module Insights {
+        var fileInput = <HTMLInputElement>document.getElementById('importInsightsConfig');
 
+        fileInput.addEventListener('change', function (e) {
+            var file = fileInput.files[0];
+            var textType = /json.*/;
+
+            try {
+                console.log("Reading file");
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    insights = JSON.parse(reader.result);
+                    console.log("File loaded");
+                }
+
+                reader.readAsText(file);
+            } catch (ex) {
+                console.log("File could not be loaded. Error: " + ex);
+            }
+        });
+        
     }
 
     module Prepare {

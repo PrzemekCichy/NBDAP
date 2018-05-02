@@ -91,13 +91,6 @@ namespace WebApp.Controllers
 
                         stream.MatchingTweetReceived += (sender, args) =>
                         {
-                            //do
-                            //{
-
-                            //iterations = 10000;
-                            
-                            //} while (iterations < 0);
-                            //iterations--;
                             System.IO.File.AppendAllText(path, args.Json + "\n");
                             Console.WriteLine(args.Tweet);
                         };

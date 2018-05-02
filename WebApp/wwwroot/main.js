@@ -1,3 +1,4 @@
+var insights;
 var App;
 (function (App) {
     var Navigator;
@@ -103,6 +104,26 @@ var App;
         function addEntry($element, text) {
         }
     })(Manage || (Manage = {}));
+    var Insights;
+    (function (Insights) {
+        var fileInput = document.getElementById('importInsightsConfig');
+        fileInput.addEventListener('change', function (e) {
+            var file = fileInput.files[0];
+            var textType = /json.*/;
+            try {
+                console.log("Reading file");
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    insights = JSON.parse(reader.result);
+                    console.log("File loaded");
+                };
+                reader.readAsText(file);
+            }
+            catch (ex) {
+                console.log("File could not be loaded. Error: " + ex);
+            }
+        });
+    })(Insights || (Insights = {}));
     var Prepare;
     (function (Prepare) {
         var names = ["Text", "Hashtags", "Reply", "User"];

@@ -255,7 +255,7 @@ namespace WebApp.Controllers
 
             //We need to check whether the world is not a sub word.
             //We do it after the word is matched using aho-corasick
-            private static bool IsEnglishLetter(char c)
+            public static bool IsEnglishLetter(char c)
             {
                 return (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z');
             }
@@ -323,6 +323,9 @@ namespace WebApp.Controllers
                             } else {
                                 continue;
                             }
+                        }
+                        if (verifiedWords.Count == 0) {
+                            continue;
                         }
 
                         matched++;
