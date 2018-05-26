@@ -97,7 +97,7 @@ namespace WebApp
         public static ConcurrentBag<_Tweet> Minify(string sUncompressed, string fileName)
         {
             ConcurrentBag<_Tweet> tweetList = new ConcurrentBag<_Tweet>();
-
+                        
             var inputLines = new BlockingCollection<string>();
 
             var readLines = Task.Factory.StartNew(() =>

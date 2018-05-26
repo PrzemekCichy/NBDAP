@@ -366,7 +366,7 @@ button, input {
 }
 
 .entries {
-    height: calc(100% - 110px);
+    height: calc(50% - 110px);
     overflow-y: auto;
 }
 

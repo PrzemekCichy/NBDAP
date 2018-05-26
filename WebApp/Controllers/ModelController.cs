@@ -65,7 +65,7 @@ namespace WebApp.Controllers
 
                     var results = new MultiSentimentAnalysisResults(analyzer.PolarityScores(tweet.Text));
 
-                    string timestamp = (Math.Ceiling(Decimal.Parse(tweet.TimestampMs) / 60000) * 60000).ToString();
+                    string timestamp = (Math.Ceiling(Decimal.Parse(tweet.TimestampMs) / 600000000000) * 600000000000).ToString();
 
                     if (!tweetList.TryAdd(timestamp, results))
                     {
@@ -578,11 +578,11 @@ namespace WebApp.Controllers
 
                         foreach (string word in a)
                         {
-                            foreach (KeyValuePair<string, List<string>> pair in tags)
+                            foreach (KeyValuePair<string, List<string>> category in tags)
                             {
-                                if (pair.Value.Contains(word))
+                                if (category.Value.Contains(word))
                                 {
-                                    similarity[pair.Key]++;
+                                    similarity[category.Key]++;
                                     total++;
                                 }
                             }

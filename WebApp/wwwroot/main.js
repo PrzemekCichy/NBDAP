@@ -493,7 +493,7 @@ var App;
         API.Decompress = Decompress;
         function Search(path, tags) {
             Log.logToDiv("decompressErrorMessage", "Searching files...", "info");
-            $.post(GetUrl("SearchController/search"), { "": JSON.stringify([path, tags]) }, function (data, status) {
+            $.get(GetUrl("SearchController/search"), { "": JSON.stringify([path, tags]) }, function (data, status) {
                 debugger;
                 data.success == false && Log.logToDiv("decompressErrorMessage", data.responseText, "error");
                 data.success == true && Log.logToDiv("decompressErrorMessage", data.responseText, "info");

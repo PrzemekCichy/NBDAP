@@ -22,8 +22,6 @@ namespace WebApp.Controllers
             AhoCorasick.Trie trie = new AhoCorasick.Trie();
 
             List<string> hashtags = new List<string>(){
-                "trump",
-                "clinton",
                 "alwaystrump",
                 "babesfortrump",
                 "bikers4trump",
