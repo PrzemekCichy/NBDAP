@@ -20,7 +20,7 @@ class MultiSentimentAnalysisResults : SentimentAnalysisResults
         this.Neutral += old.Neutral;
         this.Positive += old.Positive;
     }
-    public double Occurences { get; set; } = 0;
+    public double Occurences { get; set; } = 1;
 }
 
 namespace WebApp.Controllers
@@ -57,6 +57,8 @@ namespace WebApp.Controllers
 
             ConcurrentDictionary<string, MultiSentimentAnalysisResults> tweetList = new ConcurrentDictionary<string, MultiSentimentAnalysisResults>();
 
+            //System.IO.File.SetAttributes(Path.GetDirectoryName(fileName), FileAttributes.Normal);
+
             Parallel.ForEach(System.IO.File.ReadLines(fileName), new ParallelOptions { MaxDegreeOfParallelism = 32 }, (line, _, lineNumber) =>
             {
                 try
@@ -65,7 +67,7 @@ namespace WebApp.Controllers
 
                     var results = new MultiSentimentAnalysisResults(analyzer.PolarityScores(tweet.Text));
 
-                    string timestamp = (Math.Ceiling(Decimal.Parse(tweet.TimestampMs) / 600000000000) * 600000000000).ToString();
+                    string timestamp = (Math.Ceiling(Decimal.Parse(tweet.TimestampMs) / 6000) * 6000).ToString();
 
                     if (!tweetList.TryAdd(timestamp, results))
                     {
@@ -94,6 +96,8 @@ namespace WebApp.Controllers
 
             foreach (KeyValuePair<string, MultiSentimentAnalysisResults> pair in tweetList)
             {
+                if (pair.Value.Occurences <= 1) continue;
+
                 pair.Value.Negative /= pair.Value.Occurences;
                 pair.Value.Compound /= pair.Value.Occurences;
                 pair.Value.Neutral /= pair.Value.Occurences;

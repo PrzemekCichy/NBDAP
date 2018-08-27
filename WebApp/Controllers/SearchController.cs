@@ -13,218 +13,30 @@ namespace WebApp.Controllers
 {
     public class SearchController : Controller
     {
-
-        [HttpGet("SearchController/search")]
-        public void StartSearch()
+        public class ItemGroup
         {
-            var path = this.Request.Query.ElementAt(0).Key;
+            public string Path { get; set; }
+
+            public SearchParams Tags { get; set; }
+        }
+
+        public class SearchParams
+        {
+            public List<string> Text { get; set; }
+            public Object Reply { get; set; }
+            public Object Hashtags { get; set; }
+            public Object User { get; set; }
+
+        }
+
+        [HttpPost("SearchController/search")]
+        public void StartSearch([FromBody] ItemGroup data)
+        {
+            var path = data.Path;
 
             AhoCorasick.Trie trie = new AhoCorasick.Trie();
 
-            List<string> hashtags = new List<string>(){
-                "alwaystrump",
-                "babesfortrump",
-                "bikers4trump",
-                "bikersfortrump",
-                "blacks4trump",
-                "buildthatwall",
-                "buildthewall",
-                "cafortrump",
-                "democrats4trump",
-                "donuldtrumpforpresident",
-                "feelthetrump",
-                "femineamerica4trump",
-                "gays4trump",
-                "gaysfortrump",
-                "gotrump",
-                "heswithus",
-                "imwithhim",
-                "imwithyou",
-                "latinos4trump",
-                "latinosfortrump",
-                "maga",
-                "makeamericagreat",
-                "makeamericagreatagain",
-                "makeamericasafeagain",
-                "makeamericaworkagain",
-                "onlytrump",
-                "presienttrump",
-                "rednationrising",
-                "trump16",
-                "trump2016",
-                "trumpcares",
-                "trumpforpresident",
-                "trumpiswithyou",
-                "trumppence2016",
-                "trumpstrong",
-                "trumptrain",
-                "veteransfortrump",
-                "vets4trump",
-                "votegop",
-                "votetrump",
-                "votetrump2016",
-                "votetrumppence2016",
-                "woman4trump",
-                "women4trump",
-                "womenfortrump",
-                "antitrump",
-                "anyonebuttrump",
-                "boycotttrump",
-                "chickentrump",
-                "clowntrain",
-                "crookeddonald",
-                "crookeddrumpf",
-                "crookedtrump",
-                "crybabytrump",
-                "defeattrump",
-                "dirtydonald",
-                "donthecon",
-                "drumpf",
-                "dumbdonald",
-                "dumpthetrump",
-                "dumptrump",
-                "freethedelegates",
-                "lgbthatestrumpparty",
-                "loserdonald",
-                "losertrump",
-                "lovetrumpshate",
-                "lovetrumpshates",
-                "lyindonald",
-                "lyingdonald",
-                "lyingtrump",
-                "lyintrump",
-                "makedonalddrumpfagain",
-                "nevergop",
-                "nevertrump",
-                "nevertrumppence",
-                "nodonaldtrump",
-                "notrump",
-                "notrumpanytime",
-                "poordonald",
-                "racisttrump",
-                "releasethereturns",
-                "releaseyourtaxes",
-                "ripgop",
-                "showusyourtaxes",
-                "sleazydonald",
-                "stoptrump",
-                "stupidtrump",
-                "traitortrump",
-                "treasonoustrump",
-                "trump20never",
-                "trumplies",
-                "trumpliesmatter",
-                "trumpsopoor",
-                "trumpthefraud",
-                "trumptrainwreck",
-                "trumptreason",
-                "unfittrump",
-                "weakdonald",
-                "wherertrumpstaxes",
-                "wheresyourtaxes",
-                "whinylittlebitch",
-                "womentrumpdonald",
-                "bernwithher",
-                "bluewave2016",
-                "clintonkaine2016",
-                "estoyconella",
-                "herstory",
-                "heswithher",
-                "hillafornia",
-                "hillary2016",
-                "hillaryforamerica",
-                "hillaryforpr",
-                "hillaryforpresident",
-                "hillarysopresidential",
-                "hillarysoqualified",
-                "hillarystrong",
-                "hillstorm2016",
-                "hillyes",
-                "hrc2016",
-                "hrcisournominee",
-                "iamwithher",
-                "imwither",
-                "imwithher",
-                "imwithher2016",
-                "imwhithhillary",
-                "imwiththem",
-                "itrusther",
-                "itrusthillary",
-                "madamepresident",
-                "madampresident",
-                "momsdemandhillary",
-                "ohhillyes",
-                "readyforhillary",
-                "republicans4hillary",
-                "republicansforhillary",
-                "sheswithus",
-                "standwithmadampotus",
-                "strongertogether",
-                "uniteblue",
-                "vote4hillary",
-                "voteblue",
-                "voteblue2016",
-                "votehillary",
-                "welovehillary",
-                "yeswekaine",
-                "clintoncorruption",
-                "clintoncrime",
-                "clintoncrimefamily",
-                "clintoncrimefoundation",
-                "corrupthillary",
-                "criminalhillary",
-                "crookedclinton",
-                "crookedclintons",
-                "crookedhilary",
-                "crookedhiliary",
-                "crookedhillary",
-                "crookedhillaryclinton",
-                "deletehillary",
-                "dropouthillary",
-                "fbimwithher",
-                "handcuffhillary",
-                "heartlesshillary",
-                "hillary2jail",
-                "hillary4jail",
-                "hillary4prison",
-                "hillary4prison2016",
-                "hillaryforprison",
-                "hillaryforprison2016",
-                "hillaryliedpeopledied",
-                "hillarylies",
-                "hillaryliesmatter",
-                "hillarylosttome",
-                "hillaryrottenclinton",
-                "hillarysolympics",
-                "hillno",
-                "hypocritehillary",
-                "imnotwithher",
-                "indicthillary",
-                "iwillneverstandwithher",
-                "killary",
-                "lockherup",
-                "lyingcrookedhillary",
-                "lyinghillary",
-                "lyinhillary",
-                "moretrustedthanhillary",
-                "neverclinton",
-                "nevereverhillary",
-                "neverhillary",
-                "neverhilllary",
-                "nohillary2016",
-                "nomoreclintons",
-                "notwithher",
-                "ohhillno",
-                "releasethetranscripts",
-                "riskyhillary",
-                "shelies",
-                "sickhillary",
-                "stophillary",
-                "stophillary2016",
-                "theclintoncontamination",
-                "wehatehillary",
-                "whatmakeshillaryshortcircuit"
-              };
+            List<string> hashtags = data.Tags.Text as List<string>;
 
             hashtags = hashtags.ConvertAll(d => d.ToLower());
 
@@ -281,7 +93,15 @@ namespace WebApp.Controllers
                     Console.WriteLine("Reading " + file1.FullName);
 
                     var jsonText = System.IO.File.ReadAllText(file1.FullName);
-                    var tweets = JsonConvert.DeserializeObject<IList<_Tweet>>(jsonText);
+                    IList<_Tweet> tweets;
+
+                    try
+                    {
+                        tweets = JsonConvert.DeserializeObject<IList<_Tweet>>(jsonText);
+                    } catch (Exception E)
+                    {
+                        return;
+                    }
 
                     var matchedTweets = new List<string>();
                     for (var i = 0; i < tweets.Count; i++)
@@ -315,14 +135,18 @@ namespace WebApp.Controllers
 
                             bool end = endingPosition == text.Count() || (endingPosition != -1 && !IsEnglishLetter(text.ElementAt(endingPosition)));
 
-                            if (front && end){
+                            if (front && end)
+                            {
                                 verifiedWords.Add(word);
 
-                            } else {
+                            }
+                            else
+                            {
                                 continue;
                             }
                         }
-                        if (verifiedWords.Count == 0) {
+                        if (verifiedWords.Count == 0)
+                        {
                             continue;
                         }
 
@@ -349,14 +173,26 @@ namespace WebApp.Controllers
                 if (mergeIntoOneFile) MergeSearchResults(path, "output.txt");
 
 
-                using (StreamWriter sw = new StreamWriter(path + "/SearchStats.txt"))
+                using (StreamWriter sw = new StreamWriter(path + "/Search_stats.txt"))
                 {
-                    sw.Write("Tweets Found: " + TweetsFound + "\n Tweets Matched: " + TweetsMatched + "\n");
-                    sw.Write(JsonConvert.SerializeObject(tags, Formatting.Indented));
+                    sw.Write(JsonConvert.SerializeObject(new Stats
+                    {
+                        Found = TweetsFound,
+                        Matched = TweetsMatched,
+                        Results = tags
+                    }, Formatting.Indented));
                     // sw.Write(JsonConvert.SerializeObject(objectToSerialize, Formatting.Indented));
                     Interlocked.Increment(ref TweetsFound);
                 }
             }
+        }
+        class Stats
+        {
+            public int Found { get; set; }
+
+            public int Matched { get; set; }
+
+            public Object Results { get; set; }
         }
 
         public static void MergeSearchResults(string path, string outputName)
@@ -365,7 +201,7 @@ namespace WebApp.Controllers
 
             //Go through directory and get files
             //Concatinate the files
-            using (var output = System.IO.File.Create(path + "/" + outputName))
+            using (var output = System.IO.File.Create(path + "/" + "FILTERED_" + outputName))
             {
                 foreach (var file in files)
                 {

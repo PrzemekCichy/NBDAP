@@ -134,20 +134,18 @@
         </div>
         <div id="Model" class="flex-container hiddenContent">
             <div id="defaultCategoryContainer" class="categoryContainer hiddenContent">
-                <div class="textConatiner entryContainer">
+                <div class="textConatiner entryContainer" style="height:calc(40%)">
                     <div class="textHeader"></div>
                     <input class="entryInput" type="text" /> <button class="entryButton">Add</button>
                     <div class="errorMessage"></div>
                     <div class="entries"></div>
                 </div>
-                <br />
-                <div class="textConatiner entryContainer">
+                <div class="textConatiner entryContainer" style="height:calc(40%)">
                     <div class="textHeader"></div>
                     <input class="entryInput" type="text" /><button class="entryButton"> Add</button>
                     <div class="errorMessage"></div>
                     <div class="entries"></div>
                 </div>
-                <p>Remove Category <i class="far fa-times-circle"></i></p>
             </div>
             <div class="textConatiner categoryContainer">
                 <p>Enter category name</p>
@@ -172,11 +170,9 @@
                     <button id="modelSimilarityButton" style="color: #464646">Start Modeling</button>
                     <button id="customScriptButton" style="color: #464646">Start Python</button>
                 </div>
+                <div id="modelErrorMessage"></div>
             </div>
-            <br />
 
-            <div id="modelErrorMessage"></div>
-            <br />
         </div>
 
 
@@ -189,14 +185,14 @@
 
             <div class="textConatiner entryContainer" style="float: left;width: 48%; text-shadow:none; min-width: unset; max-width: unset">
                 <div class="textHeader" style="min-width: unset; max-width: unset; width: 100%">Statistics</div>
-                <div>Number of tweets searched: 123123123</div>
-                <div>Number of tweets matching the criteria: 123123</div>
-                <div>Average sentiment for Trump: 0.6</div>
-                <div>Average sentiment for Trump: 0.56</div>
-                <div>No of Pro-Trump Tweets: 123123</div>
-                <div>No of Anti-Trump Tweets: 1212</div>
-                <div>No of Pro-Clinton Tweets: 123123</div>
-                <div>No of Anti-Clinton Tweets: 12112</div>
+                <div>Number of tweets searched: <a id="searchTweets">-</a></div>
+                <div>Number of tweets matching the criteria: <a id="matchTweets">-</a></div>
+                <div>Average sentiment for Trump:<a id="">-</a></div>
+                <div>Average sentiment for Trump: <a id="">-</a></div>
+                <div>No of Pro-Trump Tweets: <a id="">-</a></div>
+                <div>No of Anti-Trump Tweets: <a id="">-</a></div>
+                <div>No of Pro-Clinton Tweets: <a id="">-</a></div>
+                <div>No of Anti-Clinton Tweets: <a id="">-</a></div>
             </div>
             <div class="insightsContainer" style="width: 50%;float: right; text-shadow:none">
                 <div id="tweetsMatchedChart" style="width:100%; text-shadow:none"></div>

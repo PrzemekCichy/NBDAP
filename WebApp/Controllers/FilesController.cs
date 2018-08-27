@@ -95,7 +95,9 @@ namespace WebApp.Controllers
                             Console.WriteLine(args.Tweet);
                         };
                         stream.StartStreamMatchingAllConditions();
-                    
+                        Console.WriteLine("Stream started");
+                        //stream.StopStream();
+
                 });
                 lock (lock1)
                 {

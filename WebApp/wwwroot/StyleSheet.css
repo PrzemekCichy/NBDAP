@@ -339,6 +339,7 @@ button, input {
     min-width: 300px;
     max-width: 500px;
     margin: 10px;
+    max-height: 90%;
 }
 
 .entryContainer {
@@ -366,7 +367,7 @@ button, input {
 }
 
 .entries {
-    height: calc(50% - 110px);
+    height: calc(100% - 110px);
     overflow-y: auto;
 }
 
@@ -384,8 +385,6 @@ rect.background {
     fill: none;
     pointer-events: all;
 }
-
-
 
 .axis path,
 .axis line {
